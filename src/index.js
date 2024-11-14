@@ -1,19 +1,24 @@
 import Board from "./model/Board.js";
 import Character from "./model/Character.js";
+import Enemy from "./model/Enemy.js";
 import * as view from "./view.js";
 
 window.addEventListener("load", start);
 
 let prevTime = 0;
+let accumulator = 0;
 
-const board = new Board(1200, 500);
+const board = new Board(window.innerWidth - 100, window.innerHeight - 100);
 
-const player = new Character("player", 64, 80, 0, 0, 10, false);
-const enemy1 = new Character("enemy1", 64, 80, 200, 50, 5, true);
-const enemy2 = new Character("enemy2", 64, 80, 400, 100, 20, true);
-const enemy3 = new Character("enemy3", 64, 80, 800, 150, 30, true);
-const enemy4 = new Character("enemy4", 64, 80, 1000, 200, 10, true);
-const enemies = [enemy1, enemy2, enemy3, enemy4];
+const player = new Character("player", 64, 80, 0, 0, 10, 1000, false);
+const enemy1 = new Enemy("enemy1", 128, 160, 200, 50, 5, 100);
+const enemy2 = new Enemy("enemy2", 32, 40, 400, 100, 20, 100);
+const enemy3 = new Enemy("enemy3", 32, 40, 800, 150, 30, 100);
+const enemy4 = new Enemy("enemy4", 128, 160, 1000, 50, 5, 100);
+const enemy5 = new Enemy("enemy5", 64, 80, 1000, 200, 10, 100);
+const enemy6 = new Enemy("enemy6", 64, 80, 1000, 200, 10, 100);
+const enemy7 = new Enemy("enemy7", 64, 80, 1000, 200, 10, 100);
+const enemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7];
 
 const controls = {
   up: false,
@@ -22,33 +27,8 @@ const controls = {
   right: false,
 };
 
-const enemyControls = {
-  up: false,
-  left: false,
-  down: true,
-  right: false,
-};
-
 function start() {
   view.init(board, [player, ...enemies]);
-  setInterval(() => {
-    if (controls.up || controls.down || controls.left || controls.right) {
-      player.cycleMovement();
-    } else {
-      player.movementCycle = 0;
-    }
-    if (
-      enemyControls.up ||
-      enemyControls.down ||
-      enemyControls.left ||
-      enemyControls.right
-    ) {
-      enemies.forEach((enemy) => enemy.cycleMovement());
-    } else {
-      enemies.forEach((enemy) => (enemy.movementCycle = 0));
-    }
-  }, 100);
-  setInterval(enemyMovement, 1000);
   window.addEventListener("keydown", (e) => {
     switch (e.key) {
       case "w":
@@ -96,8 +76,17 @@ function tick(time) {
   requestAnimationFrame(tick);
   const deltaT = (time - prevTime) / 1000;
   prevTime = time;
+  if (!isNaN(deltaT)) {
+    accumulator += deltaT;
+  }
   player.move(deltaT, controls, board);
-  enemies.forEach((enemy) => enemy.move(deltaT, enemyControls, board));
+  enemies.forEach((enemy) => {
+    if (accumulator > Math.random() * 500) {
+      enemy.randomizeControls();
+      accumulator = 0;
+    }
+    enemy.move(deltaT, board);
+  });
 
   if (enemies.some((enemy) => collision(player, enemy))) {
     player.health -= 1;
@@ -106,7 +95,7 @@ function tick(time) {
     view.removeCollisionAnimation(player);
   }
   view.displayCharacter(player, controls);
-  enemies.forEach((enemy) => view.displayCharacter(enemy, enemyControls));
+  enemies.forEach((enemy) => view.displayCharacter(enemy, enemy.controls));
 }
 
 function collision(c1, c2) {
@@ -116,9 +105,4 @@ function collision(c1, c2) {
     c1.y < c2.y + c2.height &&
     c1.y + c1.height > c2.y
   );
-}
-
-function enemyMovement(enemy) {
-  enemyControls.up = enemyControls.down;
-  enemyControls.down = !enemyControls.up;
 }

@@ -6,11 +6,11 @@ export default class Character {
   x;
   y;
   speed;
-  movementCycle = 0;
-  health = 100;
+  maxHealth = 1000;
+  health = 1000;
   enemy = false;
 
-  constructor(id, width, height, startX, startY, speed, isEnemy) {
+  constructor(id, width, height, startX, startY, speed, health, isEnemy) {
     this.id = id;
     this.width = width;
     this.height = height;
@@ -18,14 +18,8 @@ export default class Character {
     this.y = startY;
     this.speed = speed;
     this.enemy = isEnemy;
-  }
-
-  cycleMovement() {
-    if (this.movementCycle === 3) {
-      this.movementCycle = 0;
-    } else {
-      this.movementCycle++;
-    }
+    this.maxHealth = health;
+    this.health = health;
   }
 
   move(deltaT, controls, board) {

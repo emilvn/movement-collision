@@ -1,7 +1,7 @@
 export default class Board {
   width;
   height;
-  element = document.querySelector("#board");
+  element;
 
   constructor(width, height) {
     this.width = width;
