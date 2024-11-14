@@ -1,6 +1,6 @@
 import Board from "./model/Board.js";
-import Character from "./model/Character.js";
 import Enemy from "./model/Enemy.js";
+import Player from "./model/Player.js";
 import * as view from "./view.js";
 
 window.addEventListener("load", start);
@@ -10,14 +10,14 @@ let accumulator = 0;
 
 const board = new Board(window.innerWidth - 100, window.innerHeight - 100);
 
-const player = new Character({ id: "player" });
-const enemy1 = new Enemy("small");
-const enemy2 = new Enemy("medium");
-const enemy3 = new Enemy("large");
-const enemy4 = new Enemy("small");
-const enemy5 = new Enemy("medium");
-const enemy6 = new Enemy("large");
-const enemy7 = new Enemy("small");
+const player = new Player({ level: 2 });
+const enemy1 = new Enemy({ level: 1 });
+const enemy2 = new Enemy({ level: 1 });
+const enemy3 = new Enemy({ level: 2 });
+const enemy4 = new Enemy({ level: 3 });
+const enemy5 = new Enemy({ level: 4 });
+const enemy6 = new Enemy({ level: 5 });
+const enemy7 = new Enemy({ level: 6 });
 const enemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7];
 
 const controls = {
@@ -97,9 +97,10 @@ function tick(time) {
     if (handleCollision(player, enemy)) {
       view.addCollisionAnimation(enemy);
       playerCollided = true;
-    } else {
-      view.removeCollisionAnimation(enemy);
     }
+    setTimeout(() => {
+      view.removeCollisionAnimation(enemy);
+    }, 500);
 
     view.displayCharacter(enemy, enemy.controls);
   });
@@ -113,26 +114,41 @@ function tick(time) {
   view.displayCharacter(player, controls);
 }
 
-function handleCollision(c1, c2) {
-  if (collision(c1, c2)) {
-    c1.takeDamage(c2.damage);
-    c2.takeDamage(c1.damage);
+function handleCollision(charA, charB) {
+  if (!charA.alive || !charB.alive) return false;
+  if (collision(charA, charB)) {
+    const c1LeveledDown = charA.takeDamage(charB.damage);
+    const c2LeveledDown = charB.takeDamage(charA.damage);
 
-    if (!c1.alive) {
-      c2.heal(10);
-    } else if (!c2.alive) {
-      c1.heal(10);
+    if (c1LeveledDown) {
+      akilledb(charB, charA);
+    } else if (c2LeveledDown) {
+      akilledb(charA, charB);
     }
     return true;
   }
   return false;
 }
 
-function collision(c1, c2) {
+function akilledb(charA, charB) {
+  charA.levelUp();
+  view.addLevelUpAnimation(charA);
+
+  if (charB.alive) {
+    view.addInvulnerabilityAnimation(charB);
+  }
+
+  setTimeout(() => {
+    view.removeInvulnerabilityAnimation(charB);
+    view.removeLevelUpAnimation(charA);
+  }, 2000);
+}
+
+function collision(charA, charB) {
   return (
-    c1.x < c2.x + c2.width &&
-    c1.x + c1.width > c2.x &&
-    c1.y < c2.y + c2.height &&
-    c1.y + c1.height > c2.y
+    charA.x < charB.x + charB.width &&
+    charA.x + charA.width > charB.x &&
+    charA.y < charB.y + charB.height &&
+    charA.y + charA.height > charB.y
   );
 }

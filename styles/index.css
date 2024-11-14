@@ -41,27 +41,52 @@ body {
   filter: grayscale(100%);
 }
 
-.collision {
-  animation-name: blink;
-  animation-duration: 0.2s;
-  animation-iteration-count: infinite;
-  animation-timing-function: ease-in-out;
-}
-
-@keyframes blink {
+@keyframes blink-red {
   50% {
-    background-color: red;
+    filter: drop-shadow(0 0 10px red);
+  }
+}
+@keyframes blink-gold {
+  50% {
+    filter: drop-shadow(0 0 10px gold);
   }
 }
 
-.move {
-  animation-name: move;
-  animation-duration: 0.5s;
-  animation-iteration-count: infinite;
-  animation-timing-function: step-end;
+@keyframes blink-green {
+  50% {
+    filter: drop-shadow(0 0 10px lawngreen);
+  }
 }
 
-@keyframes move {
+.character.move {
+  animation: moving 0.5s infinite step-end;
+}
+
+.character.collision {
+  animation: blink-red 0.5s infinite;
+}
+
+.character.move.collision {
+  animation: moving 0.5s infinite step-end, blink-red 0.5s infinite;
+}
+
+.character.invulnerable {
+  animation: blink-gold 0.5s infinite;
+}
+
+.character.move.invulnerable {
+  animation: moving 0.5s infinite step-end, blink-gold 0.5s infinite;
+}
+
+.character.levelup {
+  animation: blink-green 0.5s infinite;
+}
+
+.character.move.levelup {
+  animation: moving 0.5s infinite step-end, blink-green 0.5s infinite;
+}
+
+@keyframes moving {
   0% {
     background-position-x: 0;
   }

@@ -2,27 +2,21 @@ import Character from "./Character.js";
 
 export default class Enemy extends Character {
   static idCounter = 1;
-  static sizes = {
-    small: { width: 32, height: 40, damage: 10, health: 50, speed: 30 },
-    medium: { width: 64, height: 80, damage: 20, health: 100, speed: 20 },
-    large: { width: 128, height: 160, damage: 40, health: 500, speed: 5 },
-  };
-
   controls = {
     up: false,
     left: false,
     down: false,
     right: false,
   };
-  constructor(size, options) {
+  constructor(options) {
     super({
       id: "enemy" + Enemy.idCounter,
-      ...Enemy.sizes[size],
       x: Math.random() * 800,
       y: Math.random() * 600,
       ...options,
       enemy: true,
     });
+    Enemy.idCounter++;
     this.randomizeControls();
   }
 

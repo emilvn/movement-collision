@@ -55,6 +55,8 @@ function initCharacterHealth(character) {
 }
 
 export function displayCharacter(character, controls) {
+  character.element.style.height = character.height + "px";
+  character.element.style.width = character.width + "px";
   displayHealth(character);
   if (!character.alive) return;
   displayLookDirection(character, controls);
@@ -95,9 +97,26 @@ function displayLookDirection(character, controls) {
 }
 
 export function addCollisionAnimation(character) {
-  character.element.querySelector(".health").classList.add("collision");
+  character.element.classList.add("collision");
 }
 
 export function removeCollisionAnimation(character) {
-  character.element.querySelector(".health").classList.remove("collision");
+  character.element.classList.remove("collision");
+}
+
+export function addInvulnerabilityAnimation(character) {
+  character.element.classList.add("invulnerable");
+  character.element.querySelector(".health").style.width = "100%";
+}
+
+export function removeInvulnerabilityAnimation(character) {
+  character.element.classList.remove("invulnerable");
+}
+
+export function addLevelUpAnimation(character) {
+  character.element.classList.add("levelup");
+}
+
+export function removeLevelUpAnimation(character) {
+  character.element.classList.remove("levelup");
 }
