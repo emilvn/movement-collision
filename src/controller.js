@@ -29,47 +29,49 @@ const controls = {
 
 function start() {
   view.init(board, [player, ...enemies]);
-  window.addEventListener("keydown", (e) => {
-    switch (e.key) {
-      case "w":
-      case "ArrowUp":
-        controls.up = true;
-        break;
-      case "a":
-      case "ArrowLeft":
-        controls.left = true;
-        break;
-      case "s":
-      case "ArrowDown":
-        controls.down = true;
-        break;
-      case "d":
-      case "ArrowRight":
-        controls.right = true;
-        break;
-    }
-  });
-  window.addEventListener("keyup", (e) => {
-    switch (e.key) {
-      case "w":
-      case "ArrowUp":
-        controls.up = false;
-        break;
-      case "a":
-      case "ArrowLeft":
-        controls.left = false;
-        break;
-      case "s":
-      case "ArrowDown":
-        controls.down = false;
-        break;
-      case "d":
-      case "ArrowRight":
-        controls.right = false;
-        break;
-    }
-  });
   tick();
+}
+
+export function handleKeyDownInput(e) {
+  switch (e.key) {
+    case "w":
+    case "ArrowUp":
+      controls.up = true;
+      break;
+    case "a":
+    case "ArrowLeft":
+      controls.left = true;
+      break;
+    case "s":
+    case "ArrowDown":
+      controls.down = true;
+      break;
+    case "d":
+    case "ArrowRight":
+      controls.right = true;
+      break;
+  }
+}
+
+export function handleKeyUpInput(e) {
+  switch (e.key) {
+    case "w":
+    case "ArrowUp":
+      controls.up = false;
+      break;
+    case "a":
+    case "ArrowLeft":
+      controls.left = false;
+      break;
+    case "s":
+    case "ArrowDown":
+      controls.down = false;
+      break;
+    case "d":
+    case "ArrowRight":
+      controls.right = false;
+      break;
+  }
 }
 
 function tick(time) {

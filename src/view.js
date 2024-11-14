@@ -1,4 +1,8 @@
+import * as controller from "./controller.js";
+
 export function init(board, characters) {
+  initKeyboardListeners();
+
   const root = document.querySelector("#root");
   const boardElement = initBoard(board);
   root.appendChild(boardElement);
@@ -7,6 +11,11 @@ export function init(board, characters) {
     const characterElement = initCharacter(c);
     board.element.appendChild(characterElement);
   });
+}
+
+function initKeyboardListeners() {
+  window.addEventListener("keydown", controller.handleKeyDownInput);
+  window.addEventListener("keyup", controller.handleKeyUpInput);
 }
 
 function initBoard(board) {
