@@ -20,7 +20,7 @@ export default class Character {
     this.y = options.y ?? this.y;
     this.speed = options.speed ?? this.speed;
     this.enemy = options.enemy ?? this.enemy;
-    this.maxHealth = options.maxHealth ?? this.maxHealth;
+    this.maxHealth = options.health ?? this.health;
     this.health = options.health ?? this.health;
   }
 

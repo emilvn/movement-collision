@@ -3,9 +3,9 @@ import Character from "./Character.js";
 export default class Enemy extends Character {
   static idCounter = 1;
   static sizes = {
-    small: { width: 32, height: 40, damage: 10, speed: 30 },
-    medium: { width: 64, height: 80, damage: 20, speed: 20 },
-    large: { width: 128, height: 160, damage: 40, speed: 5 },
+    small: { width: 32, height: 40, damage: 10, health: 50, speed: 30 },
+    medium: { width: 64, height: 80, damage: 20, health: 100, speed: 20 },
+    large: { width: 128, height: 160, damage: 40, health: 500, speed: 5 },
   };
 
   controls = {
