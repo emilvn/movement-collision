@@ -1,17 +1,19 @@
+import Board from "./model/Board.js";
+import Character from "./model/Character.js";
+import * as view from "./view.js";
+
 window.addEventListener("load", start);
 
-const BOARD = document.querySelector("#game");
 let prevTime = 0;
 
-const board = {};
+const board = new Board(1200, 500);
 
-const player = {
-  element: document.querySelector("#player"),
-  x: 0,
-  y: 0,
-  speed: 5,
-  movementCycle: 0,
-};
+const player = new Character("player", 64, 80, 0, 0, 10, false);
+const enemy1 = new Character("enemy1", 64, 80, 200, 50, 5, true);
+const enemy2 = new Character("enemy2", 64, 80, 400, 100, 20, true);
+const enemy3 = new Character("enemy3", 64, 80, 800, 150, 30, true);
+const enemy4 = new Character("enemy4", 64, 80, 1000, 200, 10, true);
+const enemies = [enemy1, enemy2, enemy3, enemy4];
 
 const controls = {
   up: false,
@@ -20,14 +22,33 @@ const controls = {
   right: false,
 };
 
+const enemyControls = {
+  up: false,
+  left: false,
+  down: true,
+  right: false,
+};
+
 function start() {
+  view.init(board, [player, ...enemies]);
   setInterval(() => {
     if (controls.up || controls.down || controls.left || controls.right) {
-      cycleMovement();
+      player.cycleMovement();
     } else {
       player.movementCycle = 0;
     }
+    if (
+      enemyControls.up ||
+      enemyControls.down ||
+      enemyControls.left ||
+      enemyControls.right
+    ) {
+      enemies.forEach((enemy) => enemy.cycleMovement());
+    } else {
+      enemies.forEach((enemy) => (enemy.movementCycle = 0));
+    }
   }, 100);
+  setInterval(enemyMovement, 1000);
   window.addEventListener("keydown", (e) => {
     switch (e.key) {
       case "w":
@@ -75,61 +96,29 @@ function tick(time) {
   requestAnimationFrame(tick);
   const deltaT = (time - prevTime) / 1000;
   prevTime = time;
-  look();
-  move(deltaT);
-  displayPlayer();
-}
+  player.move(deltaT, controls, board);
+  enemies.forEach((enemy) => enemy.move(deltaT, enemyControls, board));
 
-function look() {
-  if (controls.up && !controls.down) {
-    player.element.style.backgroundPositionY = "300%";
-  }
-  if (controls.down && !controls.up) {
-    player.element.style.backgroundPositionY = 0;
-  }
-  if (controls.left && !controls.right) {
-    player.element.style.backgroundPositionY = "200%";
-  }
-  if (controls.right && !controls.left) {
-    player.element.style.backgroundPositionY = "100%";
-  }
-}
-
-function move(deltaT) {
-  const newPos = { x: player.x, y: player.y };
-
-  if (controls.up) {
-    newPos.y -= 20 * player.speed * deltaT;
-  }
-  if (controls.down) {
-    newPos.y += 20 * player.speed * deltaT;
-  }
-  if (controls.left) {
-    newPos.x -= 32 * player.speed * deltaT;
-  }
-  if (controls.right) {
-    newPos.x += 32 * player.speed * deltaT;
-  }
-
-  if (validateMovement(player, newPos)) {
-    player.x = newPos.x;
-    player.y = newPos.y;
-  }
-}
-
-function validateMovement(player, newPos) {
-  return true;
-}
-
-function cycleMovement() {
-  if (player.movementCycle === 3) {
-    player.movementCycle = 0;
+  if (enemies.some((enemy) => collision(player, enemy))) {
+    player.health -= 1;
+    view.addCollisionAnimation(player);
   } else {
-    player.movementCycle++;
+    view.removeCollisionAnimation(player);
   }
+  view.displayCharacter(player, controls);
+  enemies.forEach((enemy) => view.displayCharacter(enemy, enemyControls));
 }
 
-function displayPlayer() {
-  player.element.style.translate = `${player.x}px ${player.y}px`;
-  player.element.style.backgroundPositionX = player.movementCycle * 100 + "%";
+function collision(c1, c2) {
+  return (
+    c1.x < c2.x + c2.width &&
+    c1.x + c1.width > c2.x &&
+    c1.y < c2.y + c2.height &&
+    c1.y + c1.height > c2.y
+  );
+}
+
+function enemyMovement(enemy) {
+  enemyControls.up = enemyControls.down;
+  enemyControls.down = !enemyControls.up;
 }
