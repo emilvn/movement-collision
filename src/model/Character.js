@@ -1,27 +1,27 @@
 export default class Character {
-  id = "";
+  static idCounter = 0;
   element = null;
   height = 40;
   width = 32;
   x = 0;
   y = 0;
   speed = 20;
-  maxHealth = 1000;
-  health = 1000;
+  maxHealth = 100;
+  health = 100;
   enemy = false;
   alive = true;
   damage = 1;
 
-  constructor(id, width, height, startX, startY, speed, health, isEnemy) {
-    this.id = id;
-    this.width = width;
-    this.height = height;
-    this.x = startX;
-    this.y = startY;
-    this.speed = speed;
-    this.enemy = isEnemy;
-    this.maxHealth = health;
-    this.health = health;
+  constructor(options) {
+    this.id = options.id ?? "character" + this.idCounter;
+    this.width = options.width ?? this.width;
+    this.height = options.height ?? this.height;
+    this.x = options.x ?? this.x;
+    this.y = options.y ?? this.y;
+    this.speed = options.speed ?? this.speed;
+    this.enemy = options.enemy ?? this.enemy;
+    this.maxHealth = options.maxHealth ?? this.maxHealth;
+    this.health = options.health ?? this.health;
   }
 
   move(deltaT, controls, board) {

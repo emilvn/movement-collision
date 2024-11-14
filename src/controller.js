@@ -10,14 +10,14 @@ let accumulator = 0;
 
 const board = new Board(window.innerWidth - 100, window.innerHeight - 100);
 
-const player = new Character("player", 64, 80, 0, 0, 10, 1000, false);
-const enemy1 = new Enemy("enemy1", 128, 160, 200, 50, 5, 100);
-const enemy2 = new Enemy("enemy2", 32, 40, 400, 100, 20, 100);
-const enemy3 = new Enemy("enemy3", 32, 40, 800, 150, 30, 100);
-const enemy4 = new Enemy("enemy4", 128, 160, 1000, 50, 5, 100);
-const enemy5 = new Enemy("enemy5", 64, 80, 1000, 200, 10, 100);
-const enemy6 = new Enemy("enemy6", 64, 80, 1000, 200, 10, 100);
-const enemy7 = new Enemy("enemy7", 64, 80, 1000, 200, 10, 100);
+const player = new Character({ id: "player" });
+const enemy1 = new Enemy("small");
+const enemy2 = new Enemy("medium");
+const enemy3 = new Enemy("large");
+const enemy4 = new Enemy("small");
+const enemy5 = new Enemy("medium");
+const enemy6 = new Enemy("large");
+const enemy7 = new Enemy("small");
 const enemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7];
 
 const controls = {
