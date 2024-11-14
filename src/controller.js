@@ -80,22 +80,50 @@ function tick(time) {
     accumulator += deltaT;
   }
   player.move(deltaT, controls, board);
+  let playerCollided = false;
   enemies.forEach((enemy) => {
+    // Randomize enemy controls every 500ms
     if (accumulator > Math.random() * 500) {
       enemy.randomizeControls();
       accumulator = 0;
     }
+
+    if (!enemy.alive) return;
+
     enemy.move(deltaT, board);
+
+    if (handleCollision(player, enemy)) {
+      view.addCollisionAnimation(enemy);
+      playerCollided = true;
+    } else {
+      view.removeCollisionAnimation(enemy);
+    }
+
+    view.displayCharacter(enemy, enemy.controls);
   });
 
-  if (enemies.some((enemy) => collision(player, enemy))) {
-    player.health -= 1;
+  if (playerCollided) {
     view.addCollisionAnimation(player);
   } else {
     view.removeCollisionAnimation(player);
   }
+
   view.displayCharacter(player, controls);
-  enemies.forEach((enemy) => view.displayCharacter(enemy, enemy.controls));
+}
+
+function handleCollision(c1, c2) {
+  if (collision(c1, c2)) {
+    c1.takeDamage(c2.damage);
+    c2.takeDamage(c1.damage);
+
+    if (!c1.alive) {
+      c2.heal(10);
+    } else if (!c2.alive) {
+      c1.heal(10);
+    }
+    return true;
+  }
+  return false;
 }
 
 function collision(c1, c2) {

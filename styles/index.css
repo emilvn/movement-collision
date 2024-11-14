@@ -37,6 +37,10 @@ body {
   background-color: red;
 }
 
+.dead {
+  filter: grayscale(100%);
+}
+
 .collision {
   animation-name: blink;
   animation-duration: 0.2s;

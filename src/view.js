@@ -1,33 +1,76 @@
 export function init(board, characters) {
-  board.element = document.querySelector("#board");
-  board.element.style.width = board.width + "px";
-  board.element.style.height = board.height + "px";
+  const root = document.querySelector("#root");
+  const boardElement = initBoard(board);
+  root.appendChild(boardElement);
 
   characters.forEach((c) => {
-    const characterElement = document.createElement("div");
-    if (c.enemy) {
-      characterElement.classList.add("enemy");
-    }
-    characterElement.setAttribute("id", c.id);
-    characterElement.classList.add("character");
-    characterElement.style.height = c.height + "px";
-    characterElement.style.width = c.width + "px";
-
-    const healthBarContainer = document.createElement("div");
-    healthBarContainer.classList.add("health-container");
-    const healthBar = document.createElement("div");
-    healthBar.style.width = "100%";
-    healthBar.classList.add("health");
-    healthBarContainer.appendChild(healthBar);
-
-    characterElement.appendChild(healthBarContainer);
-
+    const characterElement = initCharacter(c);
     board.element.appendChild(characterElement);
-    c.element = document.querySelector("#" + c.id);
   });
 }
 
+function initBoard(board) {
+  const boardElement = document.createElement("div");
+  boardElement.setAttribute("id", "board");
+  boardElement.style.width = board.width + "px";
+  boardElement.style.height = board.height + "px";
+  board.element = boardElement;
+  return boardElement;
+}
+
+function initCharacter(character) {
+  const characterElement = document.createElement("div");
+  if (character.enemy) {
+    characterElement.classList.add("enemy");
+  }
+  characterElement.setAttribute("id", character.id);
+  characterElement.classList.add("character");
+  characterElement.style.height = character.height + "px";
+  characterElement.style.width = character.width + "px";
+
+  const healthBarContainer = initCharacterHealth(character);
+  characterElement.appendChild(healthBarContainer);
+
+  character.element = characterElement;
+  return characterElement;
+}
+
+function initCharacterHealth(character) {
+  const healthBarContainer = document.createElement("div");
+  healthBarContainer.classList.add("health-container");
+  const healthBar = document.createElement("div");
+  healthBar.style.width = "100%";
+  healthBar.classList.add("health");
+  healthBarContainer.appendChild(healthBar);
+  return healthBarContainer;
+}
+
 export function displayCharacter(character, controls) {
+  displayHealth(character);
+  if (!character.alive) return;
+  displayLookDirection(character, controls);
+  displayCharacterMovement(character, controls);
+}
+
+function displayCharacterMovement(character, controls) {
+  if (controls.up || controls.down || controls.left || controls.right) {
+    character.element.classList.add("move");
+  } else {
+    character.element.classList.remove("move");
+  }
+  character.element.style.translate = `${character.x}px ${character.y}px`;
+}
+
+function displayHealth(character) {
+  const health = character.element.querySelector(".health");
+  health.style.width = (character.health / character.maxHealth) * 100 + "%";
+  if (!character.alive) {
+    character.element.classList.add("dead");
+    character.element.classList.remove("move");
+  }
+}
+
+function displayLookDirection(character, controls) {
   if (controls.up && !controls.down) {
     character.element.style.backgroundPositionY = "300%";
   }
@@ -40,15 +83,6 @@ export function displayCharacter(character, controls) {
   if (controls.right && !controls.left) {
     character.element.style.backgroundPositionY = "100%";
   }
-  if (controls.up || controls.down || controls.left || controls.right) {
-    character.element.classList.add("move");
-  } else {
-    character.element.classList.remove("move");
-  }
-  character.element.style.translate = `${character.x}px ${character.y}px`;
-
-  const health = character.element.querySelector(".health");
-  health.style.width = (character.health / character.maxHealth) * 100 + "%";
 }
 
 export function addCollisionAnimation(character) {
