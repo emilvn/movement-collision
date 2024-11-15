@@ -25,6 +25,10 @@ export default class Enemy extends Character {
     const left = Math.random() > 0.5;
     const down = Math.random() > 0.5 && !up;
     const right = Math.random() > 0.5 && !left;
+    if (!(up || left || down || right)) {
+      this.randomizeControls();
+      return;
+    }
     this.controls = {
       up,
       left,

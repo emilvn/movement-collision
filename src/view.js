@@ -2,8 +2,10 @@ import * as controller from "./controller.js";
 
 export function init(board, characters) {
   initKeyboardListeners();
+  initButtonEventListeners();
 
   const root = document.querySelector("#root");
+  root.innerHTML = "";
   const boardElement = initBoard(board);
   root.appendChild(boardElement);
 
@@ -13,7 +15,14 @@ export function init(board, characters) {
   });
 }
 
+function initButtonEventListeners() {
+  const restartButton = document.querySelector("#restart-button");
+  restartButton.addEventListener("click", controller.reset);
+}
+
 function initKeyboardListeners() {
+  window.removeEventListener("keydown", controller.handleKeyDownInput);
+  window.removeEventListener("keyup", controller.handleKeyUpInput);
   window.addEventListener("keydown", controller.handleKeyDownInput);
   window.addEventListener("keyup", controller.handleKeyUpInput);
 }

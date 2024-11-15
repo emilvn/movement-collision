@@ -8,6 +8,7 @@ body {
 }
 
 #player {
+  z-index: 10;
   background-image: url("../public/assets/characters/character10.png");
 }
 

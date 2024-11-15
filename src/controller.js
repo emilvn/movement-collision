@@ -1,4 +1,5 @@
 import Board from "./model/Board.js";
+import Character from "./model/Character.js";
 import Enemy from "./model/Enemy.js";
 import Player from "./model/Player.js";
 import * as view from "./view.js";
@@ -7,18 +8,13 @@ window.addEventListener("load", start);
 
 let prevTime = 0;
 let accumulator = 0;
+let restart = false;
 
 const board = new Board(window.innerWidth - 100, window.innerHeight - 100);
 
-const player = new Player({ level: 2 });
-const enemy1 = new Enemy({ level: 1 });
-const enemy2 = new Enemy({ level: 1 });
-const enemy3 = new Enemy({ level: 2 });
-const enemy4 = new Enemy({ level: 3 });
-const enemy5 = new Enemy({ level: 4 });
-const enemy6 = new Enemy({ level: 5 });
-const enemy7 = new Enemy({ level: 6 });
-const enemies = [enemy1, enemy2, enemy3, enemy4, enemy5, enemy6, enemy7];
+let player = new Player({ level: 2 });
+
+let enemies = createEnemies(5);
 
 const controls = {
   up: false,
@@ -30,6 +26,19 @@ const controls = {
 function start() {
   view.init(board, [player, ...enemies]);
   tick();
+}
+
+export function reset() {
+  console.log("reset");
+
+  restart = true;
+  player = new Player({ level: 2 });
+  enemies = createEnemies(5);
+  view.init(board, [player, ...enemies]);
+  setTimeout(() => {
+    restart = false;
+    tick();
+  }, 100);
 }
 
 export function handleKeyDownInput(e) {
@@ -75,7 +84,7 @@ export function handleKeyUpInput(e) {
 }
 
 function tick(time) {
-  requestAnimationFrame(tick);
+  if (!restart) requestAnimationFrame(tick);
   const deltaT = (time - prevTime) / 1000;
   prevTime = time;
   if (!isNaN(deltaT)) {
@@ -151,4 +160,18 @@ function collision(charA, charB) {
     charA.y < charB.y + charB.height &&
     charA.y + charA.height > charB.y
   );
+}
+
+function createEnemies(amount) {
+  const enemies = [];
+  for (let i = 0; i < amount; i++) {
+    enemies.push(createRandomEnemy());
+  }
+  return enemies;
+}
+
+function createRandomEnemy() {
+  return new Enemy({
+    level: Math.floor(Math.random() * Character.MAX_LEVEL - 2) + 1,
+  });
 }
