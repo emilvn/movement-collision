@@ -13,7 +13,7 @@ const board = new Board(window.innerWidth - 100, window.innerHeight - 100);
 
 let player = createPlayer();
 
-let enemies = createEnemies(25, board);
+let enemies = createEnemies(5, board);
 
 const controls = {
   up: false,
@@ -34,7 +34,7 @@ function createPlayer() {
 export function reset() {
   restart = true;
   player = createPlayer();
-  enemies = createEnemies(25, board);
+  enemies = createEnemies(5, board);
   view.init(board, [player, ...enemies]);
   setTimeout(() => {
     restart = false;
