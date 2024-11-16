@@ -1,12 +1,12 @@
 export default class Character {
   static ID_COUNTER = 0;
   static LEVELS = {
-    1: { width: 32, height: 40, damage: 5, health: 50, speed: 20 },
-    2: { width: 48, height: 60, damage: 10, health: 100, speed: 15 },
-    3: { width: 64, height: 80, damage: 20, health: 200, speed: 10 },
-    4: { width: 80, height: 100, damage: 40, health: 400, speed: 7.5 },
-    5: { width: 96, height: 120, damage: 80, health: 800, speed: 5 },
-    6: { width: 128, height: 160, damage: 160, health: 1600, speed: 2.5 },
+    1: { width: 32, height: 40, damage: 5, health: 50 },
+    2: { width: 48, height: 60, damage: 10, health: 100 },
+    3: { width: 64, height: 80, damage: 20, health: 200 },
+    4: { width: 80, height: 100, damage: 40, health: 400 },
+    5: { width: 96, height: 120, damage: 80, health: 800 },
+    6: { width: 128, height: 160, damage: 160, health: 1600 },
   };
   static MAX_LEVEL = Object.keys(Character.LEVELS).length;
 
@@ -33,7 +33,7 @@ export default class Character {
 
     this.width = options?.width ?? Character.LEVELS[this.level].width;
     this.height = options?.height ?? Character.LEVELS[this.level].height;
-    this.speed = options?.speed ?? Character.LEVELS[this.level].speed;
+    this.speed = options?.speed ?? this.speed;
     this.maxHealth = options?.health ?? Character.LEVELS[this.level].health;
     this.health = options?.health ?? Character.LEVELS[this.level].health;
     this.damage = options?.damage ?? Character.LEVELS[this.level].damage;
@@ -82,7 +82,7 @@ export default class Character {
     }
   }
 
-  levelUp() {
+  levelUp(board) {
     if (this.level === Character.MAX_LEVEL) {
       this.heal(this.maxHealth);
       return;
@@ -92,8 +92,20 @@ export default class Character {
     this.height = Character.LEVELS[this.level].height;
     this.maxHealth = Character.LEVELS[this.level].health;
     this.health = this.maxHealth;
-    this.speed = Character.LEVELS[this.level].speed;
     this.damage = Character.LEVELS[this.level].damage;
+
+    if (this.x + this.width > board.width) {
+      this.x = board.width - (this.width + 1);
+    }
+    if (this.y + this.height > board.height) {
+      this.y = board.height - (this.height + 1);
+    }
+    if (this.x < 0) {
+      this.x = 0;
+    }
+    if (this.y < 0) {
+      this.y = 0;
+    }
   }
 
   levelDown() {
@@ -107,7 +119,6 @@ export default class Character {
     this.level--;
     this.width = Character.LEVELS[this.level].width;
     this.height = Character.LEVELS[this.level].height;
-    this.speed = Character.LEVELS[this.level].speed;
     setTimeout(() => {
       this.levelDownProtectionOff();
     }, 2000);

@@ -11,8 +11,6 @@ export default class Enemy extends Character {
   constructor(options) {
     super({
       id: "enemy" + Enemy.idCounter,
-      x: Math.random() * 800,
-      y: Math.random() * 600,
       ...options,
       enemy: true,
     });

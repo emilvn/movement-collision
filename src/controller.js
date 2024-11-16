@@ -14,7 +14,7 @@ const board = new Board(window.innerWidth - 100, window.innerHeight - 100);
 
 let player = new Player({ level: 2 });
 
-let enemies = createEnemies(5);
+let enemies = createEnemies(5, board);
 
 const controls = {
   up: false,
@@ -29,11 +29,9 @@ function start() {
 }
 
 export function reset() {
-  console.log("reset");
-
   restart = true;
   player = new Player({ level: 2 });
-  enemies = createEnemies(5);
+  enemies = createEnemies(5, board);
   view.init(board, [player, ...enemies]);
   setTimeout(() => {
     restart = false;
@@ -85,6 +83,8 @@ export function handleKeyUpInput(e) {
 
 function tick(time) {
   if (!restart) requestAnimationFrame(tick);
+  view.displayCharacter(player, controls);
+
   const deltaT = (time - prevTime) / 1000;
   prevTime = time;
   if (!isNaN(deltaT)) {
@@ -93,6 +93,7 @@ function tick(time) {
   player.move(deltaT, controls, board);
   let playerCollided = false;
   enemies.forEach((enemy) => {
+    view.displayCharacter(enemy, enemy.controls);
     // Randomize enemy controls every 500ms
     if (accumulator > Math.random() * 500) {
       enemy.randomizeControls();
@@ -110,8 +111,6 @@ function tick(time) {
     setTimeout(() => {
       view.removeCollisionAnimation(enemy);
     }, 500);
-
-    view.displayCharacter(enemy, enemy.controls);
   });
 
   if (playerCollided) {
@@ -119,8 +118,6 @@ function tick(time) {
   } else {
     view.removeCollisionAnimation(player);
   }
-
-  view.displayCharacter(player, controls);
 }
 
 function handleCollision(charA, charB) {
@@ -140,7 +137,7 @@ function handleCollision(charA, charB) {
 }
 
 function akilledb(charA, charB) {
-  charA.levelUp();
+  charA.levelUp(board);
   view.addLevelUpAnimation(charA);
 
   if (charB.alive) {
@@ -162,16 +159,23 @@ function collision(charA, charB) {
   );
 }
 
-function createEnemies(amount) {
+function createEnemies(amount, board) {
   const enemies = [];
   for (let i = 0; i < amount; i++) {
-    enemies.push(createRandomEnemy());
+    enemies.push(createRandomEnemy(board));
   }
   return enemies;
 }
 
-function createRandomEnemy() {
-  return new Enemy({
+function createRandomEnemy(board) {
+  const newEnemy = new Enemy({
     level: Math.floor(Math.random() * Character.MAX_LEVEL - 2) + 1,
+    x: Math.random() * board.width,
+    y: Math.random() * board.height,
   });
+
+  if (!board.validateMovement(newEnemy, newEnemy)) {
+    return createRandomEnemy(board);
+  }
+  return newEnemy;
 }
