@@ -97,9 +97,12 @@ export default class Character {
     if (this.y < 0) {
       this.y = 0;
     }
+    while (!board.validateMovement(this, this)) {
+      this.levelDown(false);
+    }
   }
 
-  levelDown() {
+  levelDown(withProtection = true) {
     if (this.level === 1) {
       this.alive = false;
       return;
@@ -108,10 +111,12 @@ export default class Character {
     this.level--;
     this.setStatsFromLevel(this.level);
 
-    this.levelDownProtectionOn();
-    setTimeout(() => {
-      this.levelDownProtectionOff();
-    }, 2000);
+    if (withProtection) {
+      this.levelDownProtectionOn();
+      setTimeout(() => {
+        this.levelDownProtectionOff();
+      }, 2000);
+    }
   }
 
   levelDownProtectionOn() {

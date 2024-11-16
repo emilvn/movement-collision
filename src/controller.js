@@ -11,9 +11,9 @@ let restart = false;
 
 const board = new Board(window.innerWidth - 100, window.innerHeight - 100);
 
-let player = new Player({ level: 5 });
+let player = createPlayer();
 
-let enemies = createEnemies(5, board);
+let enemies = createEnemies(25, board);
 
 const controls = {
   up: false,
@@ -27,10 +27,14 @@ function start() {
   tick();
 }
 
+function createPlayer() {
+  return new Player({ level: 10 });
+}
+
 export function reset() {
   restart = true;
-  player = new Player({ level: 2 });
-  enemies = createEnemies(5, board);
+  player = createPlayer();
+  enemies = createEnemies(25, board);
   view.init(board, [player, ...enemies]);
   setTimeout(() => {
     restart = false;
@@ -122,13 +126,13 @@ function tick(time) {
 function handleCollision(charA, charB) {
   if (!charA.alive || !charB.alive) return false;
   if (collision(charA, charB)) {
-    const c1LeveledDown = charA.takeDamage(charB.damage);
-    const c2LeveledDown = charB.takeDamage(charA.damage);
+    const cALeveledDown = charA.takeDamage(charB.damage);
+    const cBLeveledDown = charB.takeDamage(charA.damage);
 
-    if (c1LeveledDown) {
-      akilledb(charB, charA);
-    } else if (c2LeveledDown) {
+    if (cBLeveledDown) {
       akilledb(charA, charB);
+    } else if (cALeveledDown) {
+      akilledb(charB, charA);
     }
     return true;
   }
@@ -168,10 +172,10 @@ function createEnemies(amount, board) {
 
 function createRandomEnemy(board) {
   const newEnemy = new Enemy({
-    level: Math.ceil(Math.random() * 10) + 1,
+    level: Math.ceil(Math.random() * 5) + 1,
     x: Math.random() * board.width,
     y: Math.random() * board.height,
-    speed: Math.random() * 20,
+    speed: Math.random() * 20 + 5,
   });
 
   if (!board.validateMovement(newEnemy, newEnemy)) {
