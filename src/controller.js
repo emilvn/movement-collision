@@ -1,5 +1,4 @@
 import Board from "./model/Board.js";
-import Character from "./model/Character.js";
 import Enemy from "./model/Enemy.js";
 import Player from "./model/Player.js";
 import * as view from "./view.js";
@@ -12,7 +11,7 @@ let restart = false;
 
 const board = new Board(window.innerWidth - 100, window.innerHeight - 100);
 
-let player = new Player({ level: 2 });
+let player = new Player({ level: 5 });
 
 let enemies = createEnemies(5, board);
 
@@ -169,9 +168,10 @@ function createEnemies(amount, board) {
 
 function createRandomEnemy(board) {
   const newEnemy = new Enemy({
-    level: Math.floor(Math.random() * Character.MAX_LEVEL - 2) + 1,
+    level: Math.ceil(Math.random() * 10) + 1,
     x: Math.random() * board.width,
     y: Math.random() * board.height,
+    speed: Math.random() * 20,
   });
 
   if (!board.validateMovement(newEnemy, newEnemy)) {

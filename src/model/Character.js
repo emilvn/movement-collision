@@ -1,14 +1,10 @@
 export default class Character {
   static ID_COUNTER = 0;
-  static LEVELS = {
-    1: { width: 32, height: 40, damage: 5, health: 50 },
-    2: { width: 48, height: 60, damage: 10, health: 100 },
-    3: { width: 64, height: 80, damage: 20, health: 200 },
-    4: { width: 80, height: 100, damage: 40, health: 400 },
-    5: { width: 96, height: 120, damage: 80, health: 800 },
-    6: { width: 128, height: 160, damage: 160, health: 1600 },
-  };
-  static MAX_LEVEL = Object.keys(Character.LEVELS).length;
+  static BASE_SPEED = 20;
+  static BASE_HEALTH = 100;
+  static BASE_DAMAGE = 5;
+  static BASE_WIDTH = 32;
+  static BASE_HEIGHT = 40;
 
   level = 1;
   element = null;
@@ -21,26 +17,30 @@ export default class Character {
   health = 100;
   enemy = false;
   alive = true;
-  damage = 1;
+  damage = 5;
 
   constructor(options) {
     this.level = options?.level ?? this.level;
-    if (this.level < 1 || this.level > Character.MAX_LEVEL) {
+    if (this.level < 1) {
       this.level = 1;
     }
     this.id = options?.id ?? "character" + this.idCounter;
-    this.width = options?.width ?? Character.LEVELS[this.level].width;
-
-    this.width = options?.width ?? Character.LEVELS[this.level].width;
-    this.height = options?.height ?? Character.LEVELS[this.level].height;
     this.speed = options?.speed ?? this.speed;
-    this.maxHealth = options?.health ?? Character.LEVELS[this.level].health;
-    this.health = options?.health ?? Character.LEVELS[this.level].health;
-    this.damage = options?.damage ?? Character.LEVELS[this.level].damage;
-
     this.x = options?.x ?? this.x;
     this.y = options?.y ?? this.y;
     this.enemy = options?.enemy ?? this.enemy;
+    this.setStatsFromLevel(this.level);
+
+    Character.ID_COUNTER++;
+  }
+
+  setStatsFromLevel(level) {
+    this.level = level;
+    this.width = Character.BASE_WIDTH * 1.1 ** (level - 1);
+    this.height = Character.BASE_HEIGHT * 1.1 ** (level - 1);
+    this.maxHealth = Character.BASE_HEALTH * 1 * 1.1 ** (level - 1);
+    this.health = this.maxHealth;
+    this.damage = Character.BASE_DAMAGE * 1 * 1.1 ** (level - 1);
   }
 
   move(deltaT, controls, board) {
@@ -83,16 +83,7 @@ export default class Character {
   }
 
   levelUp(board) {
-    if (this.level === Character.MAX_LEVEL) {
-      this.heal(this.maxHealth);
-      return;
-    }
-    this.level++;
-    this.width = Character.LEVELS[this.level].width;
-    this.height = Character.LEVELS[this.level].height;
-    this.maxHealth = Character.LEVELS[this.level].health;
-    this.health = this.maxHealth;
-    this.damage = Character.LEVELS[this.level].damage;
+    this.setStatsFromLevel(++this.level);
 
     if (this.x + this.width > board.width) {
       this.x = board.width - (this.width + 1);
@@ -113,12 +104,11 @@ export default class Character {
       this.alive = false;
       return;
     }
-    this.levelDownProtectionOn();
     this.alive = true;
-    this.maxHealth = Number.POSITIVE_INFINITY;
     this.level--;
-    this.width = Character.LEVELS[this.level].width;
-    this.height = Character.LEVELS[this.level].height;
+    this.setStatsFromLevel(this.level);
+
+    this.levelDownProtectionOn();
     setTimeout(() => {
       this.levelDownProtectionOff();
     }, 2000);
@@ -131,8 +121,6 @@ export default class Character {
   }
 
   levelDownProtectionOff() {
-    this.maxHealth = Character.LEVELS[this.level].health;
-    this.health = this.maxHealth;
-    this.damage = Character.LEVELS[this.level].damage;
+    this.setStatsFromLevel(this.level);
   }
 }
