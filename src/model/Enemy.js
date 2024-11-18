@@ -36,20 +36,7 @@ export default class Enemy extends Character {
   }
 
   move(deltaT, board) {
-    const newPos = { x: this.x, y: this.y };
-
-    if (this.controls.up) {
-      newPos.y -= 20 * this.speed * deltaT;
-    }
-    if (this.controls.down) {
-      newPos.y += 20 * this.speed * deltaT;
-    }
-    if (this.controls.left) {
-      newPos.x -= 32 * this.speed * deltaT;
-    }
-    if (this.controls.right) {
-      newPos.x += 32 * this.speed * deltaT;
-    }
+    const newPos = this.getNewPos(deltaT, this.controls);
 
     if (board.validateMovement(this, newPos)) {
       this.x = newPos.x;

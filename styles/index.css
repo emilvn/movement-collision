@@ -1,3 +1,15 @@
+:root {
+  --tile-size: 32;
+  --row-num: 10;
+  --col-num: 10;
+  --hitboxH: 30;
+  --hitboxW: 20;
+  --hitboxX: 8;
+  --hitboxY: 12;
+  --regX: 16;
+  --regY: 28;
+}
+
 body {
   background-color: slategray;
 }
@@ -5,6 +17,10 @@ body {
 #board {
   border: 2px solid #cafebabe;
   position: relative;
+  display: grid;
+  grid-template-rows: repeat(var(--row-num), max-content);
+  grid-template-columns: repeat(var(--col-num), max-content);
+  overflow: hidden;
 }
 
 #player {
@@ -103,4 +119,113 @@ body {
   100% {
     background-position-x: 400%;
   }
+}
+
+#player-stats {
+  color: #cafebabe;
+  font-family: monospace;
+  font-weight: bold;
+  font-size: large;
+}
+
+.tile {
+  width: calc(var(--tile-size) * 1px);
+  aspect-ratio: 1 / 1;
+  background-repeat: no-repeat;
+  background-size: 100%;
+  image-rendering: pixelated;
+  outline: 1px dashed #cafebabe;
+}
+
+.abyss {
+  background-image: url("../public/assets/images/tiles/abyss.png");
+}
+.cliff {
+  background-image: url("../public/assets/images/tiles/cliff.png");
+}
+.door {
+  background-image: url("../public/assets/images/tiles/door.png");
+}
+
+.fence_hori {
+  background-image: url("../public/assets/images/tiles/fence_hori.png");
+}
+.fence_vert {
+  background-image: url("../public/assets/images/tiles/fence_hori.png");
+}
+
+.floor_planks {
+  background-image: url("../public/assets/images/tiles/floor_planks.png");
+}
+.floor_stone {
+  background-image: url("../public/assets/images/tiles/floor_stone.png");
+}
+.floor_wood {
+  background-image: url("../public/assets/images/tiles/floor_wood.png");
+}
+.floor_carpet {
+  background-image: url("../public/assets/images/tiles/floor_carpet.png");
+}
+
+.flowers {
+  background-image: url("../public/assets/images/tiles/flowers.png");
+}
+.gate {
+  background-image: url("../public/assets/images/tiles/gate.png");
+}
+.grass {
+  background-image: url("../public/assets/images/tiles/grass.png");
+}
+.lava {
+  background-image: url("../public/assets/images/tiles/lava.png");
+}
+.mine {
+  background-image: url("../public/assets/images/tiles/mine.png");
+}
+.path {
+  background-image: url("../public/assets/images/tiles/path.png");
+}
+.redwall {
+  background-image: url("../public/assets/images/tiles/redwall.png");
+}
+.tree {
+  background-image: url("../public/assets/images/tiles/tree.png");
+}
+.wall {
+  background-image: url("../public/assets/images/tiles/wall.png");
+}
+.water {
+  background-image: url("../public/assets/images/tiles/water.png");
+}
+.well {
+  background-image: url("../public/assets/images/tiles/well.png");
+}
+
+.highlight {
+  outline: 2px solid yellow;
+  translate: 0 0;
+}
+
+.show-hitbox::after {
+  content: "";
+  position: absolute;
+  width: calc(var(--hitboxW) * 1px);
+  height: calc(var(--hitboxH) * 1px);
+  translate: calc(var(--hitboxX) * 1px) calc(var(--hitboxY) * 1px);
+  outline: 2px solid hotpink;
+}
+
+.show-reg::before {
+  content: "";
+  position: absolute;
+  background-color: cyan;
+
+  width: 3px;
+  height: 3px;
+
+  translate: calc(var(--regX) * 1px) calc(var(--regY) * 1px);
+}
+
+.show-rect {
+  outline: 1px solid red;
 }

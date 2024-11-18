@@ -10,14 +10,23 @@ export default class Character {
   element = null;
   height = 40;
   width = 32;
-  x = 0;
-  y = 0;
-  speed = 20;
+  x = 16;
+  y = 28;
+  regX = 16;
+  regY = 28;
+  speed = 200;
   maxHealth = 100;
   health = 100;
   enemy = false;
   alive = true;
   damage = 5;
+
+  hitbox = {
+    x: 8,
+    y: 12,
+    w: 20,
+    h: 30,
+  };
 
   constructor(options) {
     this.level = options?.level ?? this.level;
@@ -43,22 +52,41 @@ export default class Character {
     this.damage = Character.BASE_DAMAGE * 1 * 1.1 ** (level - 1);
   }
 
-  move(deltaT, controls, board) {
-    if (!this.alive) return;
+  getNewPos(deltaT, controls) {
     const newPos = { x: this.x, y: this.y };
 
-    if (controls.up) {
-      newPos.y -= 20 * this.speed * deltaT;
+    if (controls.up && controls.right) {
+      newPos.y -= (this.speed / 2) * deltaT;
+      newPos.x += (this.speed / 2) * deltaT;
+    } else if (controls.up && controls.left) {
+      newPos.y -= (this.speed / 2) * deltaT;
+      newPos.x -= (this.speed / 2) * deltaT;
+    } else if (controls.down && controls.right) {
+      newPos.y += (this.speed / 2) * deltaT;
+      newPos.x += (this.speed / 2) * deltaT;
+    } else if (controls.down && controls.left) {
+      newPos.y += (this.speed / 2) * deltaT;
+      newPos.x -= (this.speed / 2) * deltaT;
+    } else {
+      if (controls.up) {
+        newPos.y -= this.speed * deltaT;
+      }
+      if (controls.down) {
+        newPos.y += this.speed * deltaT;
+      }
+      if (controls.left) {
+        newPos.x -= this.speed * deltaT;
+      }
+      if (controls.right) {
+        newPos.x += this.speed * deltaT;
+      }
     }
-    if (controls.down) {
-      newPos.y += 20 * this.speed * deltaT;
-    }
-    if (controls.left) {
-      newPos.x -= 32 * this.speed * deltaT;
-    }
-    if (controls.right) {
-      newPos.x += 32 * this.speed * deltaT;
-    }
+    return newPos;
+  }
+
+  move(deltaT, controls, board) {
+    if (!this.alive) return;
+    const newPos = this.getNewPos(deltaT, controls);
 
     if (board.validateMovement(this, newPos)) {
       this.x = newPos.x;
