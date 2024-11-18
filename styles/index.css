@@ -55,7 +55,7 @@ body {
 }
 
 .dead {
-  filter: grayscale(100%);
+  filter: grayscale(100%) blur(1px);
 }
 
 @keyframes blink-red {
@@ -63,15 +63,10 @@ body {
     filter: drop-shadow(0 0 10px red);
   }
 }
-@keyframes blink-gold {
-  50% {
-    filter: drop-shadow(0 0 10px gold);
-  }
-}
 
-@keyframes blink-green {
+@keyframes blink-saturate {
   50% {
-    filter: drop-shadow(0 0 10px lawngreen);
+    filter: saturate(800%);
   }
 }
 
@@ -80,27 +75,11 @@ body {
 }
 
 .character.collision {
-  animation: blink-red 0.5s infinite;
+  animation: blink-saturate 0.5s infinite;
 }
 
 .character.move.collision {
-  animation: moving 0.5s infinite step-end, blink-red 0.5s infinite;
-}
-
-.character.invulnerable {
-  animation: blink-gold 0.5s infinite;
-}
-
-.character.move.invulnerable {
-  animation: moving 0.5s infinite step-end, blink-gold 0.5s infinite;
-}
-
-.character.levelup {
-  animation: blink-green 0.5s infinite;
-}
-
-.character.move.levelup {
-  animation: moving 0.5s infinite step-end, blink-green 0.5s infinite;
+  animation: moving 0.5s infinite step-end, blink-saturate 0.5s infinite;
 }
 
 @keyframes moving {

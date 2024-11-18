@@ -15,7 +15,7 @@ board.loadMap(map1);
 
 let player = createPlayer();
 
-let enemies = createEnemies(0, board);
+let enemies = createEnemies(3, board);
 
 const controls = {
   up: false,
@@ -30,7 +30,7 @@ function start() {
 }
 
 function createPlayer() {
-  return new Player({ level: 2 });
+  return new Player({ level: 4 });
 }
 
 export function reset() {
@@ -127,41 +127,12 @@ function tick(time) {
 
 function handleCollision(charA, charB) {
   if (!charA.alive || !charB.alive) return false;
-  if (collision(charA, charB)) {
-    const cALeveledDown = charA.takeDamage(charB.damage);
-    const cBLeveledDown = charB.takeDamage(charA.damage);
-
-    if (cBLeveledDown) {
-      akilledb(charA, charB);
-    } else if (cALeveledDown) {
-      akilledb(charB, charA);
-    }
+  if (charA.collidedWith(charB)) {
+    charA.takeDamage(charB.damage);
+    charB.takeDamage(charA.damage);
     return true;
   }
   return false;
-}
-
-function akilledb(c1, c2) {
-  c1.levelUp(board);
-  view.addLevelUpAnimation(c1);
-
-  if (c2.alive) {
-    view.addInvulnerabilityAnimation(c2);
-  }
-
-  setTimeout(() => {
-    view.removeInvulnerabilityAnimation(c2);
-    view.removeLevelUpAnimation(c1);
-  }, 2000);
-}
-
-function collision(c1, c2) {
-  return (
-    c1.x < c2.x + c2.width &&
-    c1.x + c1.width > c2.x &&
-    c1.y < c2.y + c2.height &&
-    c1.y + c1.height > c2.y
-  );
 }
 
 function createEnemies(amount, board) {
@@ -174,10 +145,8 @@ function createEnemies(amount, board) {
 
 function createRandomEnemy(board) {
   const newEnemy = new Enemy({
-    level: Math.ceil(Math.random() * 2) + 1,
     x: Math.random() * board.width,
     y: Math.random() * board.height,
-    speed: Math.random() * 500 + 200,
   });
 
   if (!board.validateMovement(newEnemy, newEnemy)) {

@@ -91,18 +91,23 @@ function initCharacter(character) {
 export function displayCharacter(character, controls, board) {
   character.element.style.height = character.height + "px";
   character.element.style.width = character.width + "px";
-  if (!character.alive) return;
-  displayLookDirection(character, controls);
-  displayCharacterMovement(character, controls);
   if (!character.enemy) {
     displayPlayerStats(character);
-    if (DEBUG) {
-      debugHighlightTileUnderPlayer(character, board);
-      debugShowHitBox(character);
-      debugShowRect(character);
-      debugShowReg(character);
-    }
   }
+
+  if (DEBUG) {
+    debugHighlightTileUnderPlayer(character, board);
+    debugShowHitBox(character);
+    debugShowRect(character);
+    debugShowReg(character);
+  }
+
+  if (!character.alive) {
+    character.element.classList.add("dead");
+    return;
+  }
+  displayLookDirection(character, controls);
+  displayCharacterMovement(character, controls);
 }
 
 function displayCharacterMovement(character, controls) {
@@ -139,29 +144,10 @@ export function removeCollisionAnimation(character) {
   character.element.classList.remove("collision");
 }
 
-export function addInvulnerabilityAnimation(character) {
-  character.element.classList.add("invulnerable");
-  character.element.querySelector(".health").style.width = "100%";
-}
-
-export function removeInvulnerabilityAnimation(character) {
-  character.element.classList.remove("invulnerable");
-}
-
-export function addLevelUpAnimation(character) {
-  character.element.classList.add("levelup");
-}
-
-export function removeLevelUpAnimation(character) {
-  character.element.classList.remove("levelup");
-}
-
 function displayPlayerStats(player) {
   const playerHealth = document.querySelector("#player-health");
-  const playerLevel = document.querySelector("#player-level");
   const playerDamage = document.querySelector("#player-damage");
   playerHealth.innerText = player.health.toFixed(2);
-  playerLevel.innerText = player.level;
   playerDamage.innerText = player.damage.toFixed(2);
 }
 
