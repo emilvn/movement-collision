@@ -12,6 +12,9 @@ export function init(board, characters) {
   const boardElement = initBoard(board);
   root.appendChild(boardElement);
   displayTiles(board);
+  if (DEBUG) {
+    debugShowGridOutline();
+  }
 
   characters.forEach((c) => {
     const characterElement = initCharacter(c);
@@ -193,4 +196,10 @@ function debugShowReg(character) {
 
 function debugShowRect(character) {
   character.element.classList.add("show-rect");
+}
+
+function debugShowGridOutline() {
+  document
+    .querySelectorAll(".tile")
+    .forEach((t) => t.classList.add("show-grid-outline"));
 }
