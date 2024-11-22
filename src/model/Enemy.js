@@ -1,7 +1,7 @@
 import Character from "./Character.js";
 
 export default class Enemy extends Character {
-  static idCounter = 1;
+  static ID_COUNTER = 1;
   controls = {
     up: false,
     left: false,
@@ -10,14 +10,15 @@ export default class Enemy extends Character {
   };
   constructor(options) {
     super({
-      id: "enemy" + Enemy.idCounter,
+      id: "enemy" + Enemy.ID_COUNTER,
       ...options,
       enemy: true,
     });
-    Enemy.idCounter++;
+    Enemy.ID_COUNTER++;
     this.randomizeControls();
   }
 
+  // randomizes enemy controls/movement
   randomizeControls() {
     const up = Math.random() > 0.5;
     const left = Math.random() > 0.5;
@@ -35,6 +36,7 @@ export default class Enemy extends Character {
     };
   }
 
+  // moves the enemy on the board
   move(deltaT, board) {
     const newPos = this.getNewPos(deltaT, this.controls);
 

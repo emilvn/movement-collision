@@ -179,11 +179,6 @@ body {
   background-image: url("../public/assets/images/tiles/well.png");
 }
 
-.highlight {
-  outline: 2px solid yellow;
-  translate: 0 0;
-}
-
 .show-hitbox::after {
   content: "";
   position: absolute;
@@ -210,4 +205,14 @@ body {
 
 .show-grid-outline {
   outline: 1px dashed #cafebabe;
+}
+
+.highlight-player-tile {
+  outline: 2px solid blue;
+  translate: 0 0;
+}
+
+.highlight-enemy-tile {
+  outline: 2px solid red;
+  translate: 0 0;
 }

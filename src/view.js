@@ -1,8 +1,6 @@
 import * as controller from "./controller.js";
 import { tileValueToClassnameMap } from "./maps.js";
 
-const DEBUG = false;
-
 export function init(board, characters) {
   initKeyboardListeners();
   initButtonEventListeners();
@@ -12,7 +10,7 @@ export function init(board, characters) {
   const boardElement = initBoard(board);
   root.appendChild(boardElement);
   displayTiles(board);
-  if (DEBUG) {
+  if (controller.DEBUG) {
     debugShowGridOutline();
   }
 
@@ -95,8 +93,8 @@ export function displayCharacter(character, controls, board) {
     displayPlayerStats(character);
   }
 
-  if (DEBUG) {
-    debugHighlightTileUnderPlayer(character, board);
+  if (controller.DEBUG) {
+    if (!character.enemy) debugHighlightTilesUnderCharacter(character, board);
     debugShowHitBox(character);
     debugShowRect(character);
     debugShowReg(character);
@@ -151,15 +149,17 @@ function displayPlayerStats(player) {
   playerDamage.innerText = player.damage.toFixed(2);
 }
 
-let prevTile;
-function debugHighlightTileUnderPlayer(player, board) {
-  const coord = board.getCoordFromPos(player);
-  const visualTile = getVisualTileFromCoords(coord);
-  if (!!prevTile) {
-    prevTile.classList.remove("highlight");
-  }
-  visualTile.classList.add("highlight");
-  prevTile = visualTile;
+let prevTiles = [];
+function debugHighlightTilesUnderCharacter(character, board) {
+  const coords = board.getTileCoordsFromCharacter(character);
+  const className = "highlight-player-tile";
+  prevTiles.forEach((t) => t.classList.remove(className));
+  prevTiles = [];
+  coords.forEach((c) => {
+    const visualTile = getVisualTileFromCoords(c);
+    visualTile.classList.add(className);
+    prevTiles.push(visualTile);
+  });
 }
 
 function getVisualTileFromCoords({ row, col }) {

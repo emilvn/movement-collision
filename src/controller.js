@@ -6,6 +6,10 @@ import * as view from "./view.js";
 
 window.addEventListener("load", start);
 
+// debug flag, set to true to show outlines for tiles, and character hitboxes
+export const DEBUG = true;
+
+// game loop variables
 let prevTime = 0;
 let accumulator = 0;
 let restart = false;
@@ -30,7 +34,7 @@ function start() {
 }
 
 function createPlayer() {
-  return new Player({ level: 4 });
+  return new Player();
 }
 
 export function reset() {
@@ -99,7 +103,7 @@ function tick(time) {
   let playerCollided = false;
   enemies.forEach((enemy) => {
     view.displayCharacter(enemy, enemy.controls, board);
-    // Randomize enemy controls every 500ms
+    // randomize enemy controls every 500ms
     if (accumulator > Math.random() * 500) {
       enemy.randomizeControls();
       accumulator = 0;

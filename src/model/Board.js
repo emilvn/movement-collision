@@ -1,11 +1,15 @@
 import { Grid } from "./Grid.js";
 
 export default class Board {
+  element;
+
+  // board dimensions
   width;
   height;
-  element;
-  tiles;
   tileSize;
+
+  // tiles grid
+  tiles;
 
   constructor(width, height, tileSize) {
     this.width = width;
@@ -17,6 +21,7 @@ export default class Board {
     );
   }
 
+  // loads a map into the board
   loadMap(map) {
     for (let row = 0; row < map.length; row++) {
       for (let col = 0; col < map[0].length; col++) {
@@ -25,6 +30,7 @@ export default class Board {
     }
   }
 
+  // checks if a character can move to a new position
   validateMovement(character, newPos) {
     let tmpChar = {
       regX: character.regX,
@@ -34,37 +40,46 @@ export default class Board {
     };
     const coords = this.getTileCoordsFromCharacter(tmpChar);
 
-    if (coords.some((c) => this.isWall(this.getTileAtCoord(c)))) {
+    if (coords.some((c) => this.isObstacle(this.getTileAtCoord(c)))) {
       return false;
     }
-
-    return coords.every(
-      ({ row, col }) =>
-        row >= 0 &&
-        col < this.tiles.colNum &&
-        col >= 0 &&
-        row < this.tiles.rowNum
+    if (!character.enemy) {
+      console.log(newPos);
+    }
+    return (
+      coords.every(
+        ({ row, col }) =>
+          row >= 0 &&
+          col < this.tiles.colNum &&
+          col >= 0 &&
+          row < this.tiles.rowNum
+      ) && newPos.y - character.regY >= 0 // make sure characters head does not go outside the board edge
     );
   }
 
-  isWall(tileval) {
-    const wallVals = [1, 3, 4, 15, 16, 17, 18, 19];
-    return wallVals.includes(tileval);
+  // checks if a tile is an obstacle, i.e. should block movement
+  isObstacle(tileval) {
+    const obstacleVals = [1, 3, 4, 15, 16, 17, 18, 19];
+    return obstacleVals.includes(tileval);
   }
 
+  // gets the tile at a given row and col
   getTileAtCoord({ row, col }) {
     return this.tiles.get(row, col);
   }
 
+  // gets the tile at a given position (x, y)
   getTileAtPos({ x, y }) {
     const { row, col } = this.getCoordFromPos({ x, y });
     return this.getTileAtCoord({ row, col });
   }
 
+  // gets the position (x, y) of the top left corner of a tile given a row and col
   getTilePosFromCoord({ row, col }) {
     return { x: col * this.tileSize, y: row * this.tileSize };
   }
 
+  // gets the row and col of a tile given a position (x, y)
   getCoordFromPos({ x, y }) {
     return {
       row: Math.floor(y / this.tileSize),
@@ -72,6 +87,7 @@ export default class Board {
     };
   }
 
+  // gets the coords (row, col) of the 4 corners of a character hitbox
   getTileCoordsFromCharacter(character) {
     const topLeft = {
       x: character.x - character.regX + character.hitbox.x,
