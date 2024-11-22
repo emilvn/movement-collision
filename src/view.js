@@ -10,9 +10,6 @@ export function init(board, characters) {
   const boardElement = initBoard(board);
   root.appendChild(boardElement);
   displayTiles(board);
-  if (window.DEBUG) {
-    debugShowGridOutline();
-  }
 
   characters.forEach((c) => {
     const characterElement = initCharacter(c);
@@ -98,6 +95,9 @@ export function displayCharacter(character, controls, board) {
     debugShowHitBox(character);
     debugShowRect(character);
     debugShowReg(character);
+    debugShowGridOutline();
+  } else {
+    removeDebugStyles(character);
   }
 
   if (!character.alive) {
@@ -188,4 +188,14 @@ function debugShowGridOutline() {
   document
     .querySelectorAll(".tile")
     .forEach((t) => t.classList.add("show-grid-outline"));
+}
+
+function removeDebugStyles(character) {
+  character.element.classList.remove("show-hitbox");
+  character.element.classList.remove("show-reg");
+  character.element.classList.remove("show-rect");
+  document.querySelectorAll(".tile").forEach((t) => {
+    t.classList.remove("show-grid-outline");
+    t.classList.remove("highlight-player-tile");
+  });
 }
