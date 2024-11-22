@@ -6,8 +6,8 @@ import * as view from "./view.js";
 
 window.addEventListener("load", start);
 
-// debug flag, set to true to show outlines for tiles, and character hitboxes
-export const DEBUG = false;
+// to enable debug mode, set window.DEBUG = true, can be done in the browser console
+window.DEBUG = false;
 
 // game loop variables
 let prevTime = 0;

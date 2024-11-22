@@ -10,7 +10,7 @@ export function init(board, characters) {
   const boardElement = initBoard(board);
   root.appendChild(boardElement);
   displayTiles(board);
-  if (controller.DEBUG) {
+  if (window.DEBUG) {
     debugShowGridOutline();
   }
 
@@ -93,7 +93,7 @@ export function displayCharacter(character, controls, board) {
     displayPlayerStats(character);
   }
 
-  if (controller.DEBUG) {
+  if (window.DEBUG) {
     if (!character.enemy) debugHighlightTilesUnderCharacter(character, board);
     debugShowHitBox(character);
     debugShowRect(character);
