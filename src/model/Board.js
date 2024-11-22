@@ -43,9 +43,6 @@ export default class Board {
     if (coords.some((c) => this.isObstacle(this.getTileAtCoord(c)))) {
       return false;
     }
-    if (!character.enemy) {
-      console.log(newPos);
-    }
     return (
       coords.every(
         ({ row, col }) =>

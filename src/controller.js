@@ -7,7 +7,7 @@ import * as view from "./view.js";
 window.addEventListener("load", start);
 
 // debug flag, set to true to show outlines for tiles, and character hitboxes
-export const DEBUG = true;
+export const DEBUG = false;
 
 // game loop variables
 let prevTime = 0;
