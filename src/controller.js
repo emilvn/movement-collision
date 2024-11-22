@@ -6,8 +6,8 @@ import * as view from "./view.js";
 
 window.addEventListener("load", start);
 
-// to enable debug mode, set window.DEBUG = true, can be done in the browser console
-window.DEBUG = false;
+// debug toggle flag
+let DEBUG = false;
 
 // game loop variables
 let prevTime = 0;
@@ -157,4 +157,13 @@ function createRandomEnemy(board) {
     return createRandomEnemy(board);
   }
   return newEnemy;
+}
+
+export function debugModeOn() {
+  return DEBUG;
+}
+
+export function toggleDebug() {
+  DEBUG = !DEBUG;
+  view.setDebugButtonText(DEBUG ? "ON" : "OFF");
 }

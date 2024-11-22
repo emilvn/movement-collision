@@ -3,7 +3,7 @@ import { tileValueToClassnameMap } from "./maps.js";
 
 export function init(board, characters) {
   initKeyboardListeners();
-  initButtonEventListeners();
+  initButtons();
 
   const root = document.querySelector("#root");
   root.innerHTML = "";
@@ -17,9 +17,18 @@ export function init(board, characters) {
   });
 }
 
-function initButtonEventListeners() {
+function initButtons() {
   const restartButton = document.querySelector("#restart-button");
   restartButton.addEventListener("click", controller.reset);
+
+  const debugButton = document.querySelector("#debug-button");
+  debugButton.addEventListener("click", controller.toggleDebug);
+  setDebugButtonText(controller.debugModeOn() ? "ON" : "OFF");
+}
+
+export function setDebugButtonText(text) {
+  const debugButtonText = document.querySelector("#debug-status");
+  debugButtonText.innerText = text;
 }
 
 function initKeyboardListeners() {
@@ -90,7 +99,7 @@ export function displayCharacter(character, controls, board) {
     displayPlayerStats(character);
   }
 
-  if (window.DEBUG) {
+  if (controller.debugModeOn()) {
     if (!character.enemy) debugHighlightTilesUnderCharacter(character, board);
     debugShowHitBox(character);
     debugShowRect(character);
