@@ -10,3 +10,5 @@
 - implementér line of sight for enemies
   - enemies kan kun se spilleren hvis der ikke er noget i vejen
   - enemies kan kun se spilleren hvis de er indenfor en vis afstand
+
+Den sidste commit før afleveringsfristen skal være tagget “HANDIN”
