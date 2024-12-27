@@ -19,7 +19,7 @@ board.loadMap(map1);
 
 let player = createPlayer();
 
-let enemies = createEnemies(3, board);
+let enemies = createEnemies(1, board);
 
 const controls = {
   up: false,
@@ -40,7 +40,7 @@ function createPlayer() {
 export function reset() {
   restart = true;
   player = createPlayer();
-  enemies = createEnemies(5, board);
+  enemies = createEnemies(1, board);
   view.init(board, [player, ...enemies]);
   setTimeout(() => {
     restart = false;
