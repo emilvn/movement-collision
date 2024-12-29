@@ -37,14 +37,14 @@ export default class Enemy extends Character {
   }
 
   // moves the enemy on the board
-  move(deltaT, board) {
+  move(deltaT, collisionSystem) {
     const newPos = this.getNewPos(deltaT, this.controls);
 
-    if (board.validateMovement(this, newPos)) {
-      this.x = newPos.x;
-      this.y = newPos.y;
+    if (collisionSystem.validateMovement(this, newPos)) {
+        this.x = newPos.x;
+        this.y = newPos.y;
     } else {
-      this.randomizeControls();
+        this.randomizeControls();
     }
-  }
+}
 }

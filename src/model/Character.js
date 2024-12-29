@@ -93,15 +93,15 @@ export default class Character {
     return newPos;
   }
 
-  move(deltaT, controls, board) {
+  move(deltaT, controls, collisionSystem) {
     if (!this.alive) return;
     const newPos = this.getNewPos(deltaT, controls);
 
-    if (board.validateMovement(this, newPos)) {
-      this.x = newPos.x;
-      this.y = newPos.y;
+    if (collisionSystem.validateMovement(this, newPos)) {
+        this.x = newPos.x;
+        this.y = newPos.y;
     }
-  }
+}
 
   takeDamage(damage) {
     this.health -= damage;
@@ -112,6 +112,7 @@ export default class Character {
     return false;
   }
 
+  // Unused for now
   heal(heal) {
     this.health += heal;
     if (this.health > this.maxHealth) {
@@ -119,17 +120,4 @@ export default class Character {
     }
   }
 
-  // check if this character collided with another character
-  // uses bounding box collision detection on hitboxes
-  collidedWith(character) {
-    return (
-      this.x + this.hitbox.x <
-        character.x + character.hitbox.x + character.hitbox.w &&
-      this.x + this.hitbox.x + this.hitbox.w >
-        character.x + character.hitbox.x &&
-      this.y + this.hitbox.y <
-        character.y + character.hitbox.y + character.hitbox.h &&
-      this.y + this.hitbox.y + this.hitbox.h > character.y + character.hitbox.y
-    );
-  }
 }
