@@ -1,4 +1,5 @@
 import { Grid } from "./Grid.js";
+import Tile from "./Tile.js";
 export default class Board {
   element;
 
@@ -10,9 +11,6 @@ export default class Board {
   // tiles grid
   tiles;
 
-  // collision system reference
-  collisionSystem;
-
   constructor(width, height, tileSize) {
       this.width = width;
       this.height = height;
@@ -23,29 +21,31 @@ export default class Board {
       );
   }
 
-  setCollisionSystem(collisionSystem) {
-      this.collisionSystem = collisionSystem;
-  }
-
   // loads a map into the board
   loadMap(map) {
     for (let row = 0; row < map.length; row++) {
       for (let col = 0; col < map[0].length; col++) {
-        this.tiles.set(row, col, map[row][col]);
+        const tileType = map[row][col];
+        this.tiles.set(row, col, new Tile(tileType));
       }
     }
   }
 
   // checks if a tile is an obstacle, i.e. should block movement
-  isObstacle(tileval) {
-    const obstacleVals = [1, 3, 4, 15, 16, 17, 18, 19];
-    return obstacleVals.includes(tileval);
-  }
+  isObstacle(tile) {
+    if (!tile) {
+      return true; // out of bounds - needs to be true, otherwise it will be considered a valid move and the enemy will be stuck in place and player-enemy-coliision will not work
+    }
+    return tile.isObstacle;
+}
 
   // gets the tile at a given row and col
   getTileAtCoord({ row, col }) {
+    if (this.tiles.indexFor(row, col) === -1) {
+      return null; // out of bounds
+    }
     return this.tiles.get(row, col);
-  }
+}
 
   // gets the tile at a given position (x, y)
   getTileAtPos({ x, y }) {

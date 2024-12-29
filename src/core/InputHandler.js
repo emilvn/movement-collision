@@ -8,6 +8,8 @@ export default class InputHandler {
         };
     }
 
+    // note: .bind(this) is used to bind the context of the function to the class instance. 
+    // This is necessary because the functions are passed as event listeners and would otherwise lose the context of the class instance.
     setupListeners() {
         window.addEventListener('keydown', this.handleKeyDown.bind(this));
         window.addEventListener('keyup', this.handleKeyUp.bind(this));

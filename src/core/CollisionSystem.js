@@ -18,19 +18,20 @@ export default class CollisionSystem {
             hitbox: character.hitbox,
             ...newPos
         };
-
+    
         const coords = this.board.getTileCoordsFromCharacter(tmpChar);
-        
+    
+        // Check if any of the tiles are out of bounds
+        if (coords.some(coord => this.board.getTileAtCoord(coord) === null)) {
+            return false;
+        }
+    
+        // Check if any of the tiles are obstacles
         if (coords.some(c => this.board.isObstacle(this.board.getTileAtCoord(c)))) {
             return false;
         }
-
-        return coords.every(({row, col}) => 
-            row >= 0 && 
-            col < this.board.tiles.colNum && 
-            col >= 0 && 
-            row < this.board.tiles.rowNum
-        ) && newPos.y - character.regY >= 0;
+    
+        return true;
     }
 
     getCharacterBounds(character) {

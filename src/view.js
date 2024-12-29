@@ -1,5 +1,4 @@
 import * as controller from "./controller.js";
-import { tileValueToClassnameMap } from "./maps.js";
 
 export function init(board, characters) {
   initKeyboardListeners();
@@ -68,13 +67,13 @@ function initTiles(board) {
 
 function displayTiles(board) {
   for (let row = 0; row < board.tiles.rowNum; row++) {
-    for (let col = 0; col < board.tiles.colNum; col++) {
-      const tile = document.querySelector(
-        `.tile[data-row="${row}"][data-col="${col}"]`
-      );
-      const tileVal = board.tiles.get(row, col);
-      tile.classList.add(tileValueToClassnameMap[tileVal]);
-    }
+      for (let col = 0; col < board.tiles.colNum; col++) {
+          const tile = document.querySelector(
+              `.tile[data-row="${row}"][data-col="${col}"]`
+          );
+          const tileObj = board.tiles.get(row, col);
+          tile.classList.add(tileObj.className);
+      }
   }
 }
 
