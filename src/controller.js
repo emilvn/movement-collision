@@ -5,7 +5,8 @@ import Player from "./model/Player.js";
 import GameLoop from "./core/GameLoop.js";
 import InputHandler from "./core/InputHandler.js";
 import CollisionSystem from "./core/CollisionSystem.js";
-import * as view from "./view.js";
+import * as view from "./view/view.js";
+import * as debugRenderer from "./view/debugRenderer.js";
 
 // debug toggle flag
 let DEBUG = false;
@@ -74,5 +75,6 @@ export function debugModeOn() {
 
 export function toggleDebug() {
     DEBUG = !DEBUG;
+    debugRenderer.setEnabled(DEBUG);
     view.setDebugButtonText(DEBUG ? "ON" : "OFF");
 }
