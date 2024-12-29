@@ -27,11 +27,7 @@ export default class CollisionSystem {
         }
     
         // Check if any of the tiles are obstacles
-        if (coords.some(c => this.board.isObstacle(this.board.getTileAtCoord(c)))) {
-            return false;
-        }
-    
-        return true;
+        return !coords.some(c => this.board.isObstacle(this.board.getTileAtCoord(c)));
     }
 
     getCharacterBounds(character) {
