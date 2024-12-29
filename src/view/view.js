@@ -1,4 +1,5 @@
-import * as controller from "./controller.js";
+import * as controller from "../controller.js";
+import * as debugRenderer from "./debugRenderer.js";
 
 export function init(board, characters) {
   initKeyboardListeners();
@@ -99,13 +100,13 @@ export function displayCharacter(character, controls, board) {
   }
 
   if (controller.debugModeOn()) {
-    if (!character.enemy) debugHighlightTilesUnderCharacter(character, board);
-    debugShowHitBox(character);
-    debugShowRect(character);
-    debugShowReg(character);
-    debugShowGridOutline();
+    if (!character.enemy) debugRenderer.highlightTilesUnderCharacter(character, board);
+    debugRenderer.showHitBox(character);
+    debugRenderer.showRect(character);
+    debugRenderer.showReg(character);
+    debugRenderer.showGridOutline();
   } else {
-    removeDebugStyles(character);
+    debugRenderer.clearAll(character);
   }
 
   if (!character.alive) {
@@ -155,55 +156,4 @@ function displayPlayerStats(player) {
   const playerDamage = document.querySelector("#player-damage");
   playerHealth.innerText = player.health.toFixed(2);
   playerDamage.innerText = player.damage.toFixed(2);
-}
-
-let prevTiles = [];
-function debugHighlightTilesUnderCharacter(character, board) {
-  const coords = board.getTileCoordsFromCharacter(character);
-  const className = "highlight-player-tile";
-  prevTiles.forEach((t) => t.classList.remove(className));
-  prevTiles = [];
-  coords.forEach((c) => {
-    const visualTile = getVisualTileFromCoords(c);
-    visualTile.classList.add(className);
-    prevTiles.push(visualTile);
-  });
-}
-
-function getVisualTileFromCoords({ row, col }) {
-  return document.querySelector(`.tile[data-row="${row}"][data-col="${col}"]`);
-}
-
-function debugShowHitBox(character) {
-  document.documentElement.style.setProperty("--hitboxH", character.hitbox.h);
-  document.documentElement.style.setProperty("--hitboxW", character.hitbox.w);
-  document.documentElement.style.setProperty("--hitboxX", character.hitbox.x);
-  document.documentElement.style.setProperty("--hitboxY", character.hitbox.y);
-  character.element.classList.add("show-hitbox");
-}
-
-function debugShowReg(character) {
-  document.documentElement.style.setProperty("--regY", character.regY);
-  document.documentElement.style.setProperty("--regX", character.regX);
-  character.element.classList.add("show-reg");
-}
-
-function debugShowRect(character) {
-  character.element.classList.add("show-rect");
-}
-
-function debugShowGridOutline() {
-  document
-    .querySelectorAll(".tile")
-    .forEach((t) => t.classList.add("show-grid-outline"));
-}
-
-function removeDebugStyles(character) {
-  character.element.classList.remove("show-hitbox");
-  character.element.classList.remove("show-reg");
-  character.element.classList.remove("show-rect");
-  document.querySelectorAll(".tile").forEach((t) => {
-    t.classList.remove("show-grid-outline");
-    t.classList.remove("highlight-player-tile");
-  });
 }
