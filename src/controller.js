@@ -1,4 +1,10 @@
-import { map1 } from "./maps.js";
+import {
+  map1,
+  mapArena,
+  mapAsymmetric,
+  mapMaze,
+  mapOpen,
+} from "../configs/maps.js";
 import Board from "./model/Board.js";
 import Enemy from "./model/Enemy.js";
 import Player from "./model/Player.js";
@@ -12,7 +18,11 @@ import * as debugRenderer from "./view/debugRenderer.js";
 let DEBUG = false;
 
 const board = new Board(768, 768, 64);
-board.loadMap(map1);
+// board.loadMap(map1);
+// board.loadMap(mapMaze);
+board.loadMap(mapArena);
+// board.loadMap(mapOpen);
+// board.loadMap(mapAsymmetric);
 
 // Initialize core systems
 const inputHandler = new InputHandler();
@@ -25,56 +35,56 @@ let enemies = createEnemies(1, board);
 window.addEventListener("load", start);
 
 function start() {
-    view.init(board, [player, ...enemies]);
-    
-    gameLoop = new GameLoop(
-        board,
-        player, 
-        enemies,
-        view,
-        inputHandler,
-        collisionSystem
-    );
-    
-    gameLoop.start();
+  view.init(board, [player, ...enemies]);
+
+  gameLoop = new GameLoop(
+    board,
+    player,
+    enemies,
+    view,
+    inputHandler,
+    collisionSystem
+  );
+
+  gameLoop.start();
 }
 
 function createPlayer() {
-    return new Player();
+  return new Player({ x: 96, y: 96 });
 }
 
 function createEnemies(amount, board) {
-    const enemies = [];
-    for (let i = 0; i < amount; i++) {
-        enemies.push(createRandomEnemy(board));
-    }
-    return enemies;
+  const enemies = [];
+  for (let i = 0; i < amount; i++) {
+    enemies.push(createRandomEnemy(board));
+  }
+  return enemies;
 }
 
 function createRandomEnemy(board) {
-    const newEnemy = new Enemy({
-        x: Math.random() * board.width,
-        y: Math.random() * board.height,
-    });
+  const newEnemy = new Enemy({
+    x: Math.random() * board.width,
+    y: Math.random() * board.height,
+  });
 
-    if (!collisionSystem.validateMovement(newEnemy, newEnemy)) {
-        return createRandomEnemy(board);
-    }
-    return newEnemy;
+  if (!collisionSystem.validateMovement(newEnemy, newEnemy)) {
+    return createRandomEnemy(board);
+  }
+  return newEnemy;
 }
 
 export function reset() {
-    player = createPlayer();
-    enemies = createEnemies(1, board);
-    gameLoop.reset(player, enemies);
+  player = createPlayer();
+  enemies = createEnemies(1, board);
+  gameLoop.reset(player, enemies);
 }
 
 export function debugModeOn() {
-    return DEBUG;
+  return DEBUG;
 }
 
 export function toggleDebug() {
-    DEBUG = !DEBUG;
-    debugRenderer.setEnabled(DEBUG);
-    view.setDebugButtonText(DEBUG ? "ON" : "OFF");
+  DEBUG = !DEBUG;
+  debugRenderer.setEnabled(DEBUG);
+  view.setDebugButtonText(DEBUG ? "ON" : "OFF");
 }

@@ -54,15 +54,19 @@ export function aStar(start, goal, board, h) {
     let current = openSet.dequeue();
     const currentKey = getCoordKey(current);
     const currentGScore = gScore[currentKey] ?? Infinity;
+
     if (current.row === goalCoords.row && current.col === goalCoords.col) {
       return reconstructPath(cameFrom, current);
     }
+
     const neighbours = board.tiles.neighbours(current.row, current.col);
     for (const neighbour of neighbours) {
       const neighbourKey = getCoordKey(neighbour);
       const neighbourGScore = gScore[neighbourKey] ?? Infinity;
+
       const tile = board.getTileAtCoord(neighbour);
       if (!tile) continue; // skip if tile is out of bounds
+
       const tentativeGScore = currentGScore + tile.getPathfindingCost();
       if (tentativeGScore < neighbourGScore) {
         cameFrom[neighbourKey] = current;
@@ -77,12 +81,12 @@ export function aStar(start, goal, board, h) {
   return [];
 }
 
-function calculateFScore(coords, goal, gScore, h) {
-  const coordId = getCoordKey(coords);
-  const gScoreValue = gScore[coordId] ?? Infinity;
-  return gScoreValue + h(coords, goal);
-}
-
+/**
+ * Reconstructs the fastest path and returns it
+ * @param {{[key:string]:{row:number, col: number}}} cameFrom map of grid coords containing the path from goal to start
+ * @param {{row: number, col: number}} current goal cell coords
+ * @returns {{row: number, col: number}[]} return
+ */
 function reconstructPath(cameFrom, current) {
   const totalPath = [current];
   while (current) {

@@ -62,7 +62,24 @@ export default class Character {
 
   getNewPos(deltaT, controls) {
     const newPos = { x: this.x, y: this.y };
-    // diagonal movement, move at half speed to prevent faster diagonal movement
+    if (this.isDiagonalMovement(controls)) {
+      this.handleDiagonalMovement(newPos, deltaT, controls);
+    } else {
+      this.handleSingleDirectionMovement(newPos, deltaT, controls);
+    }
+    return newPos;
+  }
+
+  isDiagonalMovement(controls) {
+    return (
+      (controls.up && controls.right) ||
+      (controls.up && controls.left) ||
+      (controls.down && controls.right) ||
+      (controls.down && controls.left)
+    );
+  }
+
+  handleDiagonalMovement(newPos, deltaT, controls) {
     if (controls.up && controls.right) {
       newPos.y -= (this.speed / 2) * deltaT;
       newPos.x += (this.speed / 2) * deltaT;
@@ -75,22 +92,22 @@ export default class Character {
     } else if (controls.down && controls.left) {
       newPos.y += (this.speed / 2) * deltaT;
       newPos.x -= (this.speed / 2) * deltaT;
-    } else {
-      // single direction movement
-      if (controls.up) {
-        newPos.y -= this.speed * deltaT;
-      }
-      if (controls.down) {
-        newPos.y += this.speed * deltaT;
-      }
-      if (controls.left) {
-        newPos.x -= this.speed * deltaT;
-      }
-      if (controls.right) {
-        newPos.x += this.speed * deltaT;
-      }
     }
-    return newPos;
+  }
+
+  handleSingleDirectionMovement(newPos, deltaT, controls) {
+    if (controls.up) {
+      newPos.y -= this.speed * deltaT;
+    }
+    if (controls.down) {
+      newPos.y += this.speed * deltaT;
+    }
+    if (controls.left) {
+      newPos.x -= this.speed * deltaT;
+    }
+    if (controls.right) {
+      newPos.x += this.speed * deltaT;
+    }
   }
 
   move(deltaT, controls, collisionSystem) {
@@ -98,10 +115,10 @@ export default class Character {
     const newPos = this.getNewPos(deltaT, controls);
 
     if (collisionSystem.validateMovement(this, newPos)) {
-        this.x = newPos.x;
-        this.y = newPos.y;
+      this.x = newPos.x;
+      this.y = newPos.y;
     }
-}
+  }
 
   takeDamage(damage) {
     this.health -= damage;
@@ -119,5 +136,4 @@ export default class Character {
       this.health = this.maxHealth;
     }
   }
-
 }

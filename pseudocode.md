@@ -1,4 +1,5 @@
-# Pseudocode for our A* implementation
+# Pseudocode for our A\* implementation
+
 ```
 // Returns a unique string key for grid coordinates
 function getCoordKey(coords)
@@ -46,33 +47,26 @@ function aStar(start, goal, board, heuristicFunction)
            return reconstructPath(cameFrom, current)
 
        neighbours := board.tiles.neighbours(current.row, current.col)
-       
+
        for each neighbour in neighbours
            neighbourKey := getCoordKey(neighbour)
            neighbourGScore := gScore[neighbourKey] ?? Infinity
-           
+
            tile := board.getTileAtCoord(neighbour)
            if tile is null
                continue
-           
+
            // Factor in terrain cost for pathfinding
            tentativeGScore := currentGScore + tile.getPathfindingCost()
-           
+
            if tentativeGScore < neighbourGScore
                cameFrom[neighbourKey] := current
                gScore[neighbourKey] := tentativeGScore
                fScore[neighbourKey] := tentativeGScore + heuristicFunction(neighbour, goalCoords)
-               
+
                if neighbour not in openSetCoords
                    openSet.enqueue(neighbour)
                    openSetCoords.add(neighbour)
 
    return false
-   ```
-
-## Time- and Spacecomplexity
-
-*Time complexity:* O(RC * log(RC))
-*Space complexity:* O(RC)
-
-Hvor R er rows og C er columns i grid'et
+```

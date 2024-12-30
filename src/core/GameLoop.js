@@ -1,4 +1,4 @@
-import { aStar, manhattanDistance } from "../utils/pathfinding.js";
+import { aStar, manhattanDistance } from "./pathfinding.js";
 import { highlightTiles } from "../view/debugRenderer.js";
 
 export default class GameLoop {
@@ -65,7 +65,7 @@ export default class GameLoop {
 
       if (!enemy.alive) return;
 
-      enemy.move(deltaT, this.collisionSystem, path);
+      enemy.move(deltaT, this.collisionSystem, this.player, path);
 
       if (this.collisionSystem.handleCollision(this.player, enemy)) {
         this.view.addCollisionAnimation(enemy);
