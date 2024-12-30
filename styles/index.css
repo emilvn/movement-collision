@@ -213,6 +213,7 @@ body {
 }
 
 .highlight-enemy-tile {
-  outline: 2px solid red;
+  outline: 1px solid red;
   translate: 0 0;
+  box-shadow: inset 0 0 0 1000px rgba(255, 0, 0, 0.2);
 }

@@ -68,13 +68,13 @@ function initTiles(board) {
 
 function displayTiles(board) {
   for (let row = 0; row < board.tiles.rowNum; row++) {
-      for (let col = 0; col < board.tiles.colNum; col++) {
-          const tile = document.querySelector(
-              `.tile[data-row="${row}"][data-col="${col}"]`
-          );
-          const tileObj = board.tiles.get(row, col);
-          tile.classList.add(tileObj.className);
-      }
+    for (let col = 0; col < board.tiles.colNum; col++) {
+      const tile = document.querySelector(
+        `.tile[data-row="${row}"][data-col="${col}"]`
+      );
+      const tileObj = board.tiles.get(row, col);
+      tile.classList.add(tileObj.className);
+    }
   }
 }
 
@@ -100,7 +100,6 @@ export function displayCharacter(character, controls, board) {
   }
 
   if (controller.debugModeOn()) {
-    if (!character.enemy) debugRenderer.highlightTilesUnderCharacter(character, board);
     debugRenderer.showHitBox(character);
     debugRenderer.showRect(character);
     debugRenderer.showReg(character);
