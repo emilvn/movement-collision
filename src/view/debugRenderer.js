@@ -9,7 +9,7 @@ export function setEnabled(isEnabled) {
 }
 
 export function highlightTilesUnderCharacter(character, board) {
-  if (!enabled || true) return;
+  if (!enabled) return;
   const coords = board.getTileCoordsFromCharacter(character);
   const className = "highlight-player-tile";
   prevTiles.forEach((t) => t.classList.remove(className));
@@ -21,11 +21,16 @@ export function highlightTilesUnderCharacter(character, board) {
   });
 }
 
+// TODO: lav om så den bruger en anden klasse til at highlighte de tiles som fjenden skal følge hen til spilleren
 export function highlightTiles(tiles) {
   if (!enabled) return;
+  const className = "highlight-player-tile";
+  prevTiles.forEach((t) => t.classList.remove(className));
+  prevTiles = [];
   tiles.forEach((c) => {
     const visualTile = getVisualTileFromCoords(c);
-    visualTile.classList.add("highlight-player-tile");
+    visualTile.classList.add(className);
+    prevTiles.push(visualTile);
   });
 }
 

@@ -21,24 +21,26 @@ export default class Enemy extends Character {
   // randomizes enemy controls/movement
   randomizeControls() {
     // TODO: Comment in again
-    // const up = Math.random() > 0.5;
-    // const left = Math.random() > 0.5;
-    // const down = Math.random() > 0.5 && !up;
-    // const right = Math.random() > 0.5 && !left;
-    // if (!(up || left || down || right)) {
-    //   this.randomizeControls();
-    //   return;
-    // }
-    // this.controls = {
-    //   up,
-    //   left,
-    //   down,
-    //   right,
-    // };
+    const up = Math.random() > 0.5;
+    const left = Math.random() > 0.5;
+    const down = Math.random() > 0.5 && !up;
+    const right = Math.random() > 0.5 && !left;
+    if (!(up || left || down || right)) {
+      this.randomizeControls();
+      return;
+    }
+    this.controls = {
+      up,
+      left,
+      down,
+      right,
+    };
   }
 
+  // TODO: moveTo metode som tager imod en celle koordinat og bevæger fjenden derover
+
   // moves the enemy on the board
-  move(deltaT, collisionSystem) {
+  move(deltaT, collisionSystem, path) {
     const newPos = this.getNewPos(deltaT, this.controls);
 
     if (collisionSystem.validateMovement(this, newPos)) {

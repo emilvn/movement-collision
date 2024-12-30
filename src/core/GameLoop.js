@@ -55,11 +55,10 @@ export default class GameLoop {
     this.enemies.forEach((enemy) => {
       this.view.displayCharacter(enemy, enemy.controls, this.board);
 
-      if (this.accumulator > Math.random() * 500) {
-        const tiles = aStar(enemy, this.player, this.board, manhattanDistance);
-        console.log(tiles);
-        highlightTiles(tiles);
+      const tiles = aStar(enemy, this.player, this.board, manhattanDistance);
 
+      highlightTiles(tiles);
+      if (this.accumulator > Math.random() * 500) {
         enemy.randomizeControls();
         this.accumulator = 0;
       }
