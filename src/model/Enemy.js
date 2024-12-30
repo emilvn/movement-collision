@@ -20,20 +20,21 @@ export default class Enemy extends Character {
 
   // randomizes enemy controls/movement
   randomizeControls() {
-    const up = Math.random() > 0.5;
-    const left = Math.random() > 0.5;
-    const down = Math.random() > 0.5 && !up;
-    const right = Math.random() > 0.5 && !left;
-    if (!(up || left || down || right)) {
-      this.randomizeControls();
-      return;
-    }
-    this.controls = {
-      up,
-      left,
-      down,
-      right,
-    };
+    // TODO: Comment in again
+    // const up = Math.random() > 0.5;
+    // const left = Math.random() > 0.5;
+    // const down = Math.random() > 0.5 && !up;
+    // const right = Math.random() > 0.5 && !left;
+    // if (!(up || left || down || right)) {
+    //   this.randomizeControls();
+    //   return;
+    // }
+    // this.controls = {
+    //   up,
+    //   left,
+    //   down,
+    //   right,
+    // };
   }
 
   // moves the enemy on the board
@@ -41,10 +42,10 @@ export default class Enemy extends Character {
     const newPos = this.getNewPos(deltaT, this.controls);
 
     if (collisionSystem.validateMovement(this, newPos)) {
-        this.x = newPos.x;
-        this.y = newPos.y;
+      this.x = newPos.x;
+      this.y = newPos.y;
     } else {
-        this.randomizeControls();
+      this.randomizeControls();
     }
-}
+  }
 }

@@ -8,7 +8,12 @@
   - i debug mode, vis stien som enemy vil tage hen til spiller
 
 - implementér line of sight for enemies
+
   - enemies kan kun se spilleren hvis der ikke er noget i vejen
   - enemies kan kun se spilleren hvis de er indenfor en vis afstand
+
+- implementér forskellige hastigheder gennem forskellige terræn
+  - terræn skal have en hastigheds værdi, som påvirker enemies movement speed
+  - heuristic for A\* skal tage højde for hastigheds værdien
 
 Den sidste commit før afleveringsfristen skal være tagget “HANDIN”
