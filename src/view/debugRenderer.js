@@ -65,6 +65,6 @@ function clearDebugStyles(character) {
   }
   document.querySelectorAll(".tile").forEach((t) => {
     t.classList.remove("show-grid-outline");
-    t.classList.remove("highlight-player-tile");
+    t.classList.remove("highlight-enemy-tile");
   });
 }
