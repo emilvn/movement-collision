@@ -74,7 +74,7 @@ export function aStar(start, goal, board, h) {
       }
     }
   }
-  return false;
+  return [];
 }
 
 function calculateFScore(coords, goal, gScore, h) {

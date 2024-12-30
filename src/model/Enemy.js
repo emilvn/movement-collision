@@ -1,3 +1,4 @@
+import CollisionSystem from "../core/CollisionSystem.js";
 import Character from "./Character.js";
 
 export default class Enemy extends Character {
@@ -39,15 +40,70 @@ export default class Enemy extends Character {
 
   // TODO: moveTo metode som tager imod en celle koordinat og bevæger fjenden derover
 
-  // moves the enemy on the board
+  /**
+   *
+   * @param {number} deltaT difference in time since last tick in seconds
+   * @param {CollisionSystem} collisionSystem
+   * @param {{row: number, col: number}[]} path list of cells to move through
+   */
   move(deltaT, collisionSystem, path) {
+    if (path && path.length > 1) {
+      // path[0] is always the coords of the cell the enemy is currently located in.
+      // we want the enemy to move towards the next cell in the path, hence path[1]
+      const nextCoord = path[1];
+      const currentCoord = collisionSystem.board.getCoordFromPos(this);
+      const coordsUnderCharacter =
+        collisionSystem.board.getTileCoordsFromCharacter(this);
+
+      if (
+        coordsUnderCharacter.every(
+          (coord) =>
+            coord.row === coordsUnderCharacter[0].row &&
+            coord.col === coordsUnderCharacter[0].col
+        )
+      ) {
+        if (nextCoord.row === currentCoord.row) {
+          if (nextCoord.col > currentCoord.col) {
+            // move right
+            this.controls = {
+              up: false,
+              down: false,
+              left: false,
+              right: true,
+            };
+          } else {
+            // move left
+            this.controls = {
+              up: false,
+              down: false,
+              left: true,
+              right: false,
+            };
+          }
+        } else if (nextCoord.row > currentCoord.row) {
+          // move down
+          this.controls = {
+            up: false,
+            down: true,
+            left: false,
+            right: false,
+          };
+        } else {
+          // move up
+          this.controls = {
+            up: true,
+            down: false,
+            left: false,
+            right: false,
+          };
+        }
+      }
+    }
     const newPos = this.getNewPos(deltaT, this.controls);
 
     if (collisionSystem.validateMovement(this, newPos)) {
       this.x = newPos.x;
       this.y = newPos.y;
-    } else {
-      this.randomizeControls();
     }
   }
 }

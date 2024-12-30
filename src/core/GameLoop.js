@@ -55,17 +55,17 @@ export default class GameLoop {
     this.enemies.forEach((enemy) => {
       this.view.displayCharacter(enemy, enemy.controls, this.board);
 
-      const tiles = aStar(enemy, this.player, this.board, manhattanDistance);
+      const path = aStar(enemy, this.player, this.board, manhattanDistance);
 
-      highlightTiles(tiles);
-      if (this.accumulator > Math.random() * 500) {
+      highlightTiles(path);
+      if (this.accumulator > Math.random() * 500 && path.length < 1) {
         enemy.randomizeControls();
         this.accumulator = 0;
       }
 
       if (!enemy.alive) return;
 
-      enemy.move(deltaT, this.collisionSystem);
+      enemy.move(deltaT, this.collisionSystem, path);
 
       if (this.collisionSystem.handleCollision(this.player, enemy)) {
         this.view.addCollisionAnimation(enemy);
