@@ -2,13 +2,13 @@ export default class PriorityQueue {
   head = null;
   tail = null;
   size = 0;
-  comparator;
+  priorityComparator;
 
   /**
-   * @param {(a, b) => number} comparator comparator function to prioritize data. Positive number = a is higher priority than b
+   * @param {(a, b) => number} priorityComparator comparator function to prioritize data. Positive number = a is higher priority than b
    */
-  constructor(comparator) {
-    this.comparator = comparator;
+  constructor(priorityComparator) {
+    this.priorityComparator = priorityComparator;
   }
 
   /**
@@ -39,7 +39,7 @@ export default class PriorityQueue {
 
     let tmpNode = this.tail;
     while (tmpNode) {
-      const c = this.comparator(data, tmpNode.data);
+      const c = this.priorityComparator(data, tmpNode.data);
       if (c <= 0) {
         // newNode should be before tmpNode
         this.insertBeforeNode(newNode, tmpNode);
@@ -51,7 +51,6 @@ export default class PriorityQueue {
       }
       tmpNode = tmpNode.next;
     }
-    this.size++;
   }
 
   dequeue() {
@@ -85,6 +84,7 @@ export default class PriorityQueue {
       existingNode.prev.next = newNode;
     }
     existingNode.prev = newNode;
+    this.size++;
   }
 
   /**
@@ -102,6 +102,7 @@ export default class PriorityQueue {
       existingNode.next.prev = newNode;
     }
     existingNode.next = newNode;
+    this.size++;
   }
 }
 

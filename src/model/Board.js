@@ -9,16 +9,20 @@ export default class Board {
   tileSize;
 
   // tiles grid
+  /**
+   * @property {Grid} tiles
+   * @public
+   */
   tiles;
 
   constructor(width, height, tileSize) {
-      this.width = width;
-      this.height = height;
-      this.tileSize = tileSize;
-      this.tiles = new Grid(
-          Math.ceil(height / tileSize),
-          Math.ceil(width / tileSize)
-      );
+    this.width = width;
+    this.height = height;
+    this.tileSize = tileSize;
+    this.tiles = new Grid(
+      Math.ceil(height / tileSize),
+      Math.ceil(width / tileSize)
+    );
   }
 
   // loads a map into the board
@@ -37,7 +41,7 @@ export default class Board {
       return true; // out of bounds - needs to be true, otherwise it will be considered a valid move and the enemy will be stuck in place and player-enemy-coliision will not work
     }
     return tile.isObstacle;
-}
+  }
 
   // gets the tile at a given row and col
   getTileAtCoord({ row, col }) {
@@ -45,7 +49,7 @@ export default class Board {
       return null; // out of bounds
     }
     return this.tiles.get(row, col);
-}
+  }
 
   // gets the tile at a given position (x, y)
   getTileAtPos({ x, y }) {
