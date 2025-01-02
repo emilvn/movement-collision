@@ -1,3 +1,5 @@
+import { showGameOverModal } from "../view/view.js";
+
 export default class Character {
   static ID_COUNTER = 1;
   // base/default stats
@@ -124,6 +126,12 @@ export default class Character {
     this.health -= damage;
     if (this.health <= 0) {
       this.alive = false;
+
+      if (!this.enemy) {
+        setTimeout(() => {
+          showGameOverModal();
+        }, 1000);
+      }
       return true;
     }
     return false;
