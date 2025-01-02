@@ -18,8 +18,6 @@ export function init(board, characters) {
 }
 
 function initButtons() {
-  const restartButton = document.querySelector("#restart-button");
-  restartButton.addEventListener("click", controller.reset);
 
   const debugButton = document.querySelector("#debug-button");
   debugButton.addEventListener("click", controller.toggleDebug);
@@ -155,4 +153,64 @@ function displayPlayerStats(player) {
   const playerDamage = document.querySelector("#player-damage");
   playerHealth.innerText = player.health.toFixed(2);
   playerDamage.innerText = player.damage.toFixed(2);
+}
+
+export function initModal() {
+  const modal = document.querySelector("#game-modal");
+  const startButton = document.querySelector('#start-button');
+  const restartButton = document.querySelector('#restart-button');
+  const mapSelect = document.querySelector('#map-select');
+  console.log(modal);
+  console.log(startButton);
+  console.log(restartButton);
+  console.log(mapSelect);
+  
+  startButton.addEventListener('click', () => {
+    const selectedMap = mapSelect.value;
+    modal.close();
+    window.dispatchEvent(new CustomEvent('gameStart', { detail: selectedMap }));
+    showStatbar();
+  });
+
+  restartButton.addEventListener('click', () => {
+    const selectedMap = mapSelect.value;
+    modal.close();
+    window.dispatchEvent(new CustomEvent('gameRestart', { detail: selectedMap }));
+    showStatbar();
+  });
+
+  showStartModal();
+}
+
+export function showStartModal() {
+  const modal = document.querySelector("#game-modal");
+  hideStatbar();
+  updateModal('Welcome!', 'Please select the map you would like to play', true);
+  modal.classList.remove('game-over');
+  document.querySelector('#game-modal').showModal();
+}
+
+export function showGameOverModal() {
+  const modal = document.querySelector("#game-modal");
+  hideStatbar();
+  updateModal('Game Over!', 'Would you like to try again?', false);
+  modal.classList.add('game-over');
+  document.querySelector('#game-modal').showModal();
+}
+
+function updateModal(header, text, isStart) {
+  document.querySelector('#modal-header').textContent = header;
+  document.querySelector('#modal-text').textContent = text;
+  document.querySelector('#start-button').style.display = isStart ? 'block' : 'none';
+  document.querySelector('#restart-button').style.display = isStart ? 'none' : 'block';
+}
+
+function hideStatbar() {
+  const statbar = document.querySelector('#statbar');
+  statbar.classList.add('hidden');
+}
+
+function showStatbar() {
+  const statbar = document.querySelector('#statbar');
+  statbar.classList.remove('hidden');
 }
