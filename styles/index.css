@@ -230,7 +230,6 @@ body {
   width: 20rem;
   height: 15rem;
   font-family: monospace;
-  animation: modalAppear 0.3s ease-out;
 }
 
 .modal::backdrop {
@@ -302,17 +301,6 @@ body {
 @keyframes textGlow {
   0%, 100% { text-shadow: 0 0 5px #00ff00; }
   50% { text-shadow: 0 0 20px #00ff00; }
-}
-
-@keyframes modalAppear {
-  from { 
-    transform: translate(-50%, -45%);
-    opacity: 0;
-  }
-  to { 
-    transform: translate(-50%, -50%);
-    opacity: 1;
-  }
 }
 
 @keyframes fadeIn {

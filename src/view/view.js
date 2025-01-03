@@ -160,10 +160,6 @@ export function initModal() {
   const startButton = document.querySelector('#start-button');
   const restartButton = document.querySelector('#restart-button');
   const mapSelect = document.querySelector('#map-select');
-  console.log(modal);
-  console.log(startButton);
-  console.log(restartButton);
-  console.log(mapSelect);
   
   startButton.addEventListener('click', () => {
     const selectedMap = mapSelect.value;
