@@ -1,116 +1,60 @@
-export default class PriorityQueue {
-  head = null;
-  tail = null;
-  size = 0;
-  priorityComparator;
+import MinHeap from "./MinHeap.js";
 
-  /**
-   * @param {(a, b) => number} priorityComparator comparator function to prioritize data. Positive number = a is higher priority than b
-   */
-  constructor(priorityComparator) {
-    this.priorityComparator = priorityComparator;
+/**
+ * @typedef {Object} GridCoord
+ * @property {number} row - Row index in the grid
+ * @property {number} col - Column index in the grid
+ */
+
+/**
+ * @typedef {Object} Node
+ * @property {GridCoord} data - The grid coordinates
+ * @property {number} priority - Priority value (fScore) for ordering in the queue
+ */
+
+export default class PriorityQueue {
+  constructor() {
+    this.heap = new MinHeap();
   }
 
   /**
-   * Returns an iterator that allows you to iterate over the queue
-   * @returns {Iterator} iterator
+   * @returns {number} Number of elements in queue
+   */
+  get size() {
+    return this.heap.size();
+  }
+
+  /**
+   * Makes PriorityQueue iterable, allowing for...of loops
+   * @returns {Iterator<GridCoord>} Iterator over the grid coordinates in the queue
    */
   [Symbol.iterator]() {
-    let current = this.head;
-    return {
-      next() {
-        if (!current) {
-          return { done: true };
-        }
-        const data = current.data;
-        current = current.next;
-        return { value: data, done: false };
-      },
-    };
+    const items = [...this.heap.heap].map((node) => node.data);
+    return items[Symbol.iterator]();
   }
 
-  enqueue(data) {
-    const newNode = new Node(data);
-    // if empty just put it in
-    if (this.size === 0) {
-      this.head = newNode;
-      this.tail = newNode;
+  /**
+   * Adds a new grid coordinate to the queue with given priority
+   * @param {GridCoord} data The grid coordinate to add
+   * @param {number} priority Priority value (fScore) determining position in queue
+   * @throws {Error} If data or priority is invalid
+   */
+  enqueue(data, priority) {
+    if (!data || typeof data.row !== "number" || typeof data.col !== "number") {
+      throw new Error("Data must be a valid grid coordinate");
     }
-
-    let tmpNode = this.tail;
-    while (tmpNode) {
-      const c = this.priorityComparator(data, tmpNode.data);
-      if (c <= 0) {
-        // newNode should be before tmpNode
-        this.insertBeforeNode(newNode, tmpNode);
-        break;
-      } else if (tmpNode === this.head) {
-        // if we reach this step, it means newNode should be the new head of the queue
-        this.insertAfterNode(newNode, tmpNode);
-        break;
-      }
-      tmpNode = tmpNode.next;
+    if (typeof priority !== "number") {
+      throw new Error("Priority must be a number");
     }
+    this.heap.insert({ data, priority });
   }
 
+  /**
+   * Removes and returns the grid coordinate with lowest priority value
+   * @returns {GridCoord | undefined} The grid coordinate with lowest priority, or undefined if queue is empty
+   */
   dequeue() {
-    if (!this.head) {
-      return undefined;
-    }
-    const data = this.head.data;
-    this.size--;
-    if (this.head === this.tail) {
-      this.head = null;
-      this.tail = null;
-      return data;
-    }
-    this.head = this.head.prev;
-    this.head.next = null;
-    return data;
-  }
-
-  /**
-   * Inserts new node before an existing node
-   * @param {Node} newNode node to insert
-   * @param {Node} existingNode node to insert new node before
-   */
-  insertBeforeNode(newNode, existingNode) {
-    newNode.prev = existingNode.prev;
-    newNode.next = existingNode;
-
-    if (this.tail === existingNode) {
-      this.tail = newNode;
-    } else {
-      existingNode.prev.next = newNode;
-    }
-    existingNode.prev = newNode;
-    this.size++;
-  }
-
-  /**
-   * Inserts new node after an existing node
-   * @param {Node} newNode node to insert
-   * @param {Node} existingNode node to insert new node after
-   */
-  insertAfterNode(newNode, existingNode) {
-    newNode.next = existingNode.next;
-    newNode.prev = existingNode;
-
-    if (existingNode === this.head) {
-      this.head = newNode;
-    } else {
-      existingNode.next.prev = newNode;
-    }
-    existingNode.next = newNode;
-    this.size++;
-  }
-}
-
-class Node {
-  next = null;
-  prev = null;
-  data;
-  constructor(data) {
-    this.data = data;
+    const node = this.heap.extractMin();
+    return node?.data;
   }
 }
