@@ -11,30 +11,28 @@
     <div id="root"></div>
 
     <section id="statbar">
-      <button id="debug-button">
-        debug mode: <span id="debug-status"></span>
-      </button>
-      
+      <div id="debug-button">Debug mode: <span id="debug-status"></span></div>
+
       <span id="player-stats">
-        | Health: <span id="player-health"></span> | Damage:
-        <span id="player-damage"></span> |
+        | Health: <span id="player-health"></span>
       </span>
     </section>
 
     <dialog id="game-modal" class="modal">
       <div class="modal-backdrop">
         <div class="modal-content">
-          <h1 id="modal-header">Welcome!</h1> <!-- The content is subject to change depending on whether the modal is at game start or gmae over -->
+          <h1 id="modal-header">Welcome!</h1>
+          <!-- The content is subject to change depending on whether the modal is at game start or gmae over -->
           <p id="modal-text"></p>
           <div class="map-selector">
-              <label for="map-select">Choose a map:</label>
-              <select id="map-select">
-                <option value="map1" selected>Road</option>
-                <option value="mapArena">Arena</option>
-                <option value="mapMaze">Maze</option>
-                <option value="mapOpen">Open</option>
-                <option value="mapAsymmetric">Asymmetric</option>
-              </select>
+            <label for="map-select">Choose a map:</label>
+            <select id="map-select">
+              <option value="map1" selected>Road</option>
+              <option value="mapArena">Arena</option>
+              <option value="mapMaze">Maze</option>
+              <option value="mapOpen">Open</option>
+              <option value="mapAsymmetric">Asymmetric</option>
+            </select>
           </div>
           <!-- Which button is showing is dependent on whether the modal is at game start or gmae over  -->
           <button id="start-button">start</button>
@@ -42,6 +40,5 @@
         </div>
       </div>
     </dialog>
-
   </body>
 </html>

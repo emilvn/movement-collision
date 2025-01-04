@@ -18,7 +18,6 @@ export function init(board, characters) {
 }
 
 function initButtons() {
-
   const debugButton = document.querySelector("#debug-button");
   debugButton.addEventListener("click", controller.toggleDebug);
   setDebugButtonText(controller.debugModeOn() ? "ON" : "OFF");
@@ -150,28 +149,28 @@ export function removeCollisionAnimation(character) {
 
 function displayPlayerStats(player) {
   const playerHealth = document.querySelector("#player-health");
-  const playerDamage = document.querySelector("#player-damage");
   playerHealth.innerText = player.health.toFixed(2);
-  playerDamage.innerText = player.damage.toFixed(2);
 }
 
 export function initModal() {
   const modal = document.querySelector("#game-modal");
-  const startButton = document.querySelector('#start-button');
-  const restartButton = document.querySelector('#restart-button');
-  const mapSelect = document.querySelector('#map-select');
-  
-  startButton.addEventListener('click', () => {
+  const startButton = document.querySelector("#start-button");
+  const restartButton = document.querySelector("#restart-button");
+  const mapSelect = document.querySelector("#map-select");
+
+  startButton.addEventListener("click", () => {
     const selectedMap = mapSelect.value;
     modal.close();
-    window.dispatchEvent(new CustomEvent('gameStart', { detail: selectedMap }));
+    window.dispatchEvent(new CustomEvent("gameStart", { detail: selectedMap }));
     showStatbar();
   });
 
-  restartButton.addEventListener('click', () => {
+  restartButton.addEventListener("click", () => {
     const selectedMap = mapSelect.value;
     modal.close();
-    window.dispatchEvent(new CustomEvent('gameRestart', { detail: selectedMap }));
+    window.dispatchEvent(
+      new CustomEvent("gameRestart", { detail: selectedMap })
+    );
     showStatbar();
   });
 
@@ -181,32 +180,36 @@ export function initModal() {
 export function showStartModal() {
   const modal = document.querySelector("#game-modal");
   hideStatbar();
-  updateModal('Welcome!', 'Please select the map you would like to play', true);
-  modal.classList.remove('game-over');
-  document.querySelector('#game-modal').showModal();
+  updateModal("Welcome!", "Please select the map you would like to play", true);
+  modal.classList.remove("game-over");
+  document.querySelector("#game-modal").showModal();
 }
 
 export function showGameOverModal() {
   const modal = document.querySelector("#game-modal");
   hideStatbar();
-  updateModal('Game Over!', 'Would you like to try again?', false);
-  modal.classList.add('game-over');
-  document.querySelector('#game-modal').showModal();
+  updateModal("Game Over!", "Would you like to try again?", false);
+  modal.classList.add("game-over");
+  document.querySelector("#game-modal").showModal();
 }
 
 function updateModal(header, text, isStart) {
-  document.querySelector('#modal-header').textContent = header;
-  document.querySelector('#modal-text').textContent = text;
-  document.querySelector('#start-button').style.display = isStart ? 'block' : 'none';
-  document.querySelector('#restart-button').style.display = isStart ? 'none' : 'block';
+  document.querySelector("#modal-header").textContent = header;
+  document.querySelector("#modal-text").textContent = text;
+  document.querySelector("#start-button").style.display = isStart
+    ? "block"
+    : "none";
+  document.querySelector("#restart-button").style.display = isStart
+    ? "none"
+    : "block";
 }
 
 function hideStatbar() {
-  const statbar = document.querySelector('#statbar');
-  statbar.classList.add('hidden');
+  const statbar = document.querySelector("#statbar");
+  statbar.classList.add("hidden");
 }
 
 function showStatbar() {
-  const statbar = document.querySelector('#statbar');
-  statbar.classList.remove('hidden');
+  const statbar = document.querySelector("#statbar");
+  statbar.classList.remove("hidden");
 }

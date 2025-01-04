@@ -11,7 +11,15 @@
 }
 
 body {
-  background-color: slategray;
+  background-color: darkslategray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#root {
+  display: flex;
+  justify-content: center;
 }
 
 #board {
@@ -105,6 +113,7 @@ body {
   font-family: monospace;
   font-weight: bold;
   font-size: large;
+  width: 100%;
 }
 
 .tile {
@@ -219,14 +228,12 @@ body {
 }
 
 .modal {
-  position: fixed;
-  top: -15%;
-  left: -48%;
-  transform: translate(-50%, -50%);
-  background: #000;
-  color: #fff;
+  top: -20%;
+  background: darkslategray;
+  color: #cafebabe;
   padding: 2rem;
-  border: 4px solid #fff;
+  border: 2px solid #cafebabe;
+  border-radius: 5px;
   width: 20rem;
   height: 15rem;
   font-family: monospace;
@@ -238,7 +245,7 @@ body {
 }
 
 .modal h1 {
-  color: #00ff00;
+  color: #cafebabe;
   text-align: center;
   margin-bottom: 1rem;
   text-transform: uppercase;
@@ -248,8 +255,7 @@ body {
 
 .map-selector label {
   display: block;
-  margin-bottom: 0.5rem;
-  color: #00ff00;
+  color: #cafebabe;
   text-transform: uppercase;
   font-size: 0.9em;
 }
@@ -257,12 +263,13 @@ body {
 .map-selector select {
   width: 100%;
   padding: 0.5rem;
-  background: #000;
-  color: #00ff00;
-  border: 2px solid #00ff00;
+  background: slategray;
+  color: #cafebabe;
+  border: 2px solid #cafebabe;
   font-family: monospace;
   cursor: pointer;
   margin: 1rem 0;
+  border-radius: 5px;
 }
 
 .map-selector select:focus {
@@ -273,17 +280,18 @@ body {
 .modal button {
   width: 100%;
   padding: 0.8rem;
-  background: #000;
-  color: #00ff00;
-  border: 2px solid #00ff00;
+  background: slategray;
+  color: #cafebabe;
+  border: 2px solid #cafebabe;
   font-family: monospace;
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s;
+  border-radius: 5px;
 }
 
 .modal button:hover {
-  background: #00ff00;
+  background: #cafebabe;
   color: #000;
   transform: scale(1.05);
 }
@@ -295,30 +303,62 @@ body {
 .modal p {
   text-align: center;
   margin-bottom: 1rem;
-  color: #00ff00;
+  color: #cafebabe;
 }
 
 @keyframes textGlow {
-  0%, 100% { text-shadow: 0 0 5px #00ff00; }
-  50% { text-shadow: 0 0 20px #00ff00; }
+  0%,
+  100% {
+    text-shadow: 0 0 5px #00ff00;
+  }
+  50% {
+    text-shadow: 0 0 20px #00ff00;
+  }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal.game-over h1 {
-  color: #ff0000;
+  color: #ff1111;
   text-shadow: 2px 2px #330000;
   animation: textGlowRed 2s infinite;
 }
 
 @keyframes textGlowRed {
-  0%, 100% { text-shadow: 0 0 5px #ff0000; }
-  50% { text-shadow: 0 0 20px #ff0000; }
+  0%,
+  100% {
+    text-shadow: 0 0 5px #ff1111;
+  }
+  50% {
+    text-shadow: 0 0 20px #ff1111;
+  }
 }
 
 .hidden {
   display: none;
+}
+
+#debug-button {
+  user-select: none;
+  font-family: monospace;
+  display: inline-block;
+  padding: 10px;
+  background: slategray;
+  color: #cafebabe;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 1px solid #cafebabe;
+  margin-top: 5px;
+}
+#debug-button:hover {
+  background: #cafebabe;
+  color: #000;
 }
