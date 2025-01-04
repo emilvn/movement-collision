@@ -25,15 +25,6 @@ export default class PriorityQueue {
   }
 
   /**
-   * Makes PriorityQueue iterable, allowing for...of loops
-   * @returns {Iterator<GridCoord>} Iterator over the grid coordinates in the queue
-   */
-  [Symbol.iterator]() {
-    const items = [...this.heap.heap].map((node) => node.data);
-    return items[Symbol.iterator]();
-  }
-
-  /**
    * Adds a new grid coordinate to the queue with given priority
    * @param {GridCoord} data The grid coordinate to add
    * @param {number} priority Priority value (fScore) determining position in queue
