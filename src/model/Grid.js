@@ -39,19 +39,12 @@ export class Grid {
 
   neighbours(row, col) {
     const { r, c } = this.getRowCol(row, col);
-    const neighbours = [];
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        if (
-          r + i < this.colNum &&
-          c + j < this.rowNum &&
-          !(i === 0 && j === 0)
-        ) {
-          neighbours.push({ row: r + i, col: c + j });
-        }
-      }
-    }
-    return neighbours;
+    const north = { row: r - 1, col: c };
+    const east = { row: r, col: c + 1 };
+    const south = { row: r + 1, col: c };
+    const west = { row: r, col: c - 1 };
+
+    return [north, east, south, west];
   }
 
   neighbourValues(row, col) {

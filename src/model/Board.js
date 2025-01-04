@@ -1,5 +1,5 @@
 import { Grid } from "./Grid.js";
-
+import Tile from "./Tile.js";
 export default class Board {
   element;
 
@@ -9,6 +9,10 @@ export default class Board {
   tileSize;
 
   // tiles grid
+  /**
+   * @property {Grid} tiles
+   * @public
+   */
   tiles;
 
   constructor(width, height, tileSize) {
@@ -25,43 +29,25 @@ export default class Board {
   loadMap(map) {
     for (let row = 0; row < map.length; row++) {
       for (let col = 0; col < map[0].length; col++) {
-        this.tiles.set(row, col, map[row][col]);
+        const tileType = map[row][col];
+        this.tiles.set(row, col, new Tile(tileType));
       }
     }
   }
 
-  // checks if a character can move to a new position
-  validateMovement(character, newPos) {
-    let tmpChar = {
-      regX: character.regX,
-      regY: character.regY,
-      hitbox: character.hitbox,
-      ...newPos,
-    };
-    const coords = this.getTileCoordsFromCharacter(tmpChar);
-
-    if (coords.some((c) => this.isObstacle(this.getTileAtCoord(c)))) {
-      return false;
-    }
-    return (
-      coords.every(
-        ({ row, col }) =>
-          row >= 0 &&
-          col < this.tiles.colNum &&
-          col >= 0 &&
-          row < this.tiles.rowNum
-      ) && newPos.y - character.regY >= 0 // make sure characters head does not go outside the board edge
-    );
-  }
-
   // checks if a tile is an obstacle, i.e. should block movement
-  isObstacle(tileval) {
-    const obstacleVals = [1, 3, 4, 15, 16, 17, 18, 19];
-    return obstacleVals.includes(tileval);
+  isObstacle(tile) {
+    if (!tile) {
+      return true; // out of bounds - needs to be true, otherwise it will be considered a valid move and the enemy will be stuck in place and player-enemy-coliision will not work
+    }
+    return tile.isObstacle;
   }
 
   // gets the tile at a given row and col
   getTileAtCoord({ row, col }) {
+    if (this.tiles.indexFor(row, col) === -1) {
+      return null; // out of bounds
+    }
     return this.tiles.get(row, col);
   }
 
@@ -102,14 +88,6 @@ export default class Board {
       x: topLeft.x + character.hitbox.w,
       y: topLeft.y + character.hitbox.h,
     };
-    topLeft.x = character.x - character.regX + character.hitbox.x;
-    topRight.x = topLeft.x + character.hitbox.w;
-    topLeft.y = character.y - character.regY + character.hitbox.y;
-    botLeft.x = topLeft.x;
-    topRight.y = topLeft.y;
-    botRight.x = topLeft.x + character.hitbox.w;
-    botLeft.y = topLeft.y + character.hitbox.h;
-    botRight.y = topLeft.y + character.hitbox.h;
 
     return [
       this.getCoordFromPos(topLeft),

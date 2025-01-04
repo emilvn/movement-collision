@@ -1,142 +1,68 @@
-import { map1 } from "./maps.js";
+import {
+  map1,
+  mapArena,
+  mapAsymmetric,
+  mapMaze,
+  mapOpen,
+} from "../configs/maps.js";
 import Board from "./model/Board.js";
 import Enemy from "./model/Enemy.js";
 import Player from "./model/Player.js";
-import * as view from "./view.js";
-
-window.addEventListener("load", start);
+import GameLoop from "./core/GameLoop.js";
+import InputHandler from "./core/InputHandler.js";
+import CollisionSystem from "./core/CollisionSystem.js";
+import * as view from "./view/view.js";
+import * as debugRenderer from "./view/debugRenderer.js";
 
 // debug toggle flag
 let DEBUG = false;
 
-// game loop variables
-let prevTime = 0;
-let accumulator = 0;
-let restart = false;
-
 const board = new Board(768, 768, 64);
-board.loadMap(map1);
 
-let player = createPlayer();
+// Initialize core systems
+const inputHandler = new InputHandler();
+const collisionSystem = new CollisionSystem(board);
+let gameLoop;
 
-let enemies = createEnemies(3, board);
+let player, enemies;
 
-const controls = {
-  up: false,
-  left: false,
-  down: false,
-  right: false,
-};
+window.addEventListener('gameStart', (e) => start(e.detail));
+window.addEventListener('gameRestart', (e) => reset(e.detail));
+window.addEventListener("load", init);
 
-function start() {
+function init() {
+  console.log("Game initialized");
+  
+  view.initModal();
+}
+
+function start(selectedMap) {
+  handleMapSelect(selectedMap);
+
+  player = createPlayer();
+  enemies = createEnemies(1, board);
+
   view.init(board, [player, ...enemies]);
-  tick();
+
+  gameLoop = new GameLoop(
+    board,
+    player,
+    enemies,
+    view,
+    inputHandler,
+    collisionSystem
+  );
+
+  gameLoop.start();
+}
+
+function handleMapSelect(mapName) {
+  const maps = { map1, mapArena, mapMaze, mapOpen, mapAsymmetric };
+  board.loadMap(maps[mapName]);
 }
 
 function createPlayer() {
-  return new Player();
-}
-
-export function reset() {
-  restart = true;
-  player = createPlayer();
-  enemies = createEnemies(5, board);
-  view.init(board, [player, ...enemies]);
-  setTimeout(() => {
-    restart = false;
-    tick();
-  }, 100);
-}
-
-export function handleKeyDownInput(e) {
-  switch (e.key) {
-    case "w":
-    case "ArrowUp":
-      controls.up = true;
-      break;
-    case "a":
-    case "ArrowLeft":
-      controls.left = true;
-      break;
-    case "s":
-    case "ArrowDown":
-      controls.down = true;
-      break;
-    case "d":
-    case "ArrowRight":
-      controls.right = true;
-      break;
-  }
-}
-
-export function handleKeyUpInput(e) {
-  switch (e.key) {
-    case "w":
-    case "ArrowUp":
-      controls.up = false;
-      break;
-    case "a":
-    case "ArrowLeft":
-      controls.left = false;
-      break;
-    case "s":
-    case "ArrowDown":
-      controls.down = false;
-      break;
-    case "d":
-    case "ArrowRight":
-      controls.right = false;
-      break;
-  }
-}
-
-function tick(time) {
-  if (!restart) requestAnimationFrame(tick);
-  view.displayCharacter(player, controls, board);
-
-  const deltaT = (time - prevTime) / 1000;
-  prevTime = time;
-  if (!isNaN(deltaT)) {
-    accumulator += deltaT;
-  }
-  player.move(deltaT, controls, board);
-  let playerCollided = false;
-  enemies.forEach((enemy) => {
-    view.displayCharacter(enemy, enemy.controls, board);
-    // randomize enemy controls every 500ms
-    if (accumulator > Math.random() * 500) {
-      enemy.randomizeControls();
-      accumulator = 0;
-    }
-
-    if (!enemy.alive) return;
-
-    enemy.move(deltaT, board);
-
-    if (handleCollision(player, enemy)) {
-      view.addCollisionAnimation(enemy);
-      playerCollided = true;
-    }
-    setTimeout(() => {
-      view.removeCollisionAnimation(enemy);
-    }, 500);
-  });
-
-  if (playerCollided) {
-    view.addCollisionAnimation(player);
-  } else {
-    view.removeCollisionAnimation(player);
-  }
-}
-
-function handleCollision(charA, charB) {
-  if (!charA.alive || !charB.alive) return false;
-  if (charA.collidedWith(charB)) {
-    charA.takeDamage(charB.damage);
-    charB.takeDamage(charA.damage);
-    return true;
-  }
-  return false;
+  return new Player({ x: 96, y: 96 });
 }
 
 function createEnemies(amount, board) {
@@ -153,10 +79,17 @@ function createRandomEnemy(board) {
     y: Math.random() * board.height,
   });
 
-  if (!board.validateMovement(newEnemy, newEnemy)) {
+  if (!collisionSystem.validateMovement(newEnemy, newEnemy)) {
     return createRandomEnemy(board);
   }
   return newEnemy;
+}
+
+export function reset(selectedMap) {
+  handleMapSelect(selectedMap);
+  player = createPlayer();
+  enemies = createEnemies(1, board);
+  gameLoop.reset(player, enemies);
 }
 
 export function debugModeOn() {
@@ -165,5 +98,6 @@ export function debugModeOn() {
 
 export function toggleDebug() {
   DEBUG = !DEBUG;
+  debugRenderer.setEnabled(DEBUG);
   view.setDebugButtonText(DEBUG ? "ON" : "OFF");
 }

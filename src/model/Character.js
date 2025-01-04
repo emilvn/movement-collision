@@ -1,3 +1,5 @@
+import { showGameOverModal } from "../view/view.js";
+
 export default class Character {
   static ID_COUNTER = 1;
   // base/default stats
@@ -62,7 +64,24 @@ export default class Character {
 
   getNewPos(deltaT, controls) {
     const newPos = { x: this.x, y: this.y };
-    // diagonal movement, move at half speed to prevent faster diagonal movement
+    if (this.isDiagonalMovement(controls)) {
+      this.handleDiagonalMovement(newPos, deltaT, controls);
+    } else {
+      this.handleSingleDirectionMovement(newPos, deltaT, controls);
+    }
+    return newPos;
+  }
+
+  isDiagonalMovement(controls) {
+    return (
+      (controls.up && controls.right) ||
+      (controls.up && controls.left) ||
+      (controls.down && controls.right) ||
+      (controls.down && controls.left)
+    );
+  }
+
+  handleDiagonalMovement(newPos, deltaT, controls) {
     if (controls.up && controls.right) {
       newPos.y -= (this.speed / 2) * deltaT;
       newPos.x += (this.speed / 2) * deltaT;
@@ -75,29 +94,29 @@ export default class Character {
     } else if (controls.down && controls.left) {
       newPos.y += (this.speed / 2) * deltaT;
       newPos.x -= (this.speed / 2) * deltaT;
-    } else {
-      // single direction movement
-      if (controls.up) {
-        newPos.y -= this.speed * deltaT;
-      }
-      if (controls.down) {
-        newPos.y += this.speed * deltaT;
-      }
-      if (controls.left) {
-        newPos.x -= this.speed * deltaT;
-      }
-      if (controls.right) {
-        newPos.x += this.speed * deltaT;
-      }
     }
-    return newPos;
   }
 
-  move(deltaT, controls, board) {
+  handleSingleDirectionMovement(newPos, deltaT, controls) {
+    if (controls.up) {
+      newPos.y -= this.speed * deltaT;
+    }
+    if (controls.down) {
+      newPos.y += this.speed * deltaT;
+    }
+    if (controls.left) {
+      newPos.x -= this.speed * deltaT;
+    }
+    if (controls.right) {
+      newPos.x += this.speed * deltaT;
+    }
+  }
+
+  move(deltaT, controls, collisionSystem) {
     if (!this.alive) return;
     const newPos = this.getNewPos(deltaT, controls);
 
-    if (board.validateMovement(this, newPos)) {
+    if (collisionSystem.validateMovement(this, newPos)) {
       this.x = newPos.x;
       this.y = newPos.y;
     }
@@ -107,29 +126,22 @@ export default class Character {
     this.health -= damage;
     if (this.health <= 0) {
       this.alive = false;
+
+      if (!this.enemy) {
+        setTimeout(() => {
+          showGameOverModal();
+        }, 1000);
+      }
       return true;
     }
     return false;
   }
 
+  // Unused for now
   heal(heal) {
     this.health += heal;
     if (this.health > this.maxHealth) {
       this.health = this.maxHealth;
     }
-  }
-
-  // check if this character collided with another character
-  // uses bounding box collision detection on hitboxes
-  collidedWith(character) {
-    return (
-      this.x + this.hitbox.x <
-        character.x + character.hitbox.x + character.hitbox.w &&
-      this.x + this.hitbox.x + this.hitbox.w >
-        character.x + character.hitbox.x &&
-      this.y + this.hitbox.y <
-        character.y + character.hitbox.y + character.hitbox.h &&
-      this.y + this.hitbox.y + this.hitbox.h > character.y + character.hitbox.y
-    );
   }
 }

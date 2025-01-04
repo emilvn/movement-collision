@@ -1,5 +1,5 @@
-import * as controller from "./controller.js";
-import { tileValueToClassnameMap } from "./maps.js";
+import * as controller from "../controller.js";
+import * as debugRenderer from "./debugRenderer.js";
 
 export function init(board, characters) {
   initKeyboardListeners();
@@ -18,8 +18,6 @@ export function init(board, characters) {
 }
 
 function initButtons() {
-  const restartButton = document.querySelector("#restart-button");
-  restartButton.addEventListener("click", controller.reset);
 
   const debugButton = document.querySelector("#debug-button");
   debugButton.addEventListener("click", controller.toggleDebug);
@@ -72,8 +70,8 @@ function displayTiles(board) {
       const tile = document.querySelector(
         `.tile[data-row="${row}"][data-col="${col}"]`
       );
-      const tileVal = board.tiles.get(row, col);
-      tile.classList.add(tileValueToClassnameMap[tileVal]);
+      const tileObj = board.tiles.get(row, col);
+      tile.classList.add(tileObj.className);
     }
   }
 }
@@ -100,13 +98,12 @@ export function displayCharacter(character, controls, board) {
   }
 
   if (controller.debugModeOn()) {
-    if (!character.enemy) debugHighlightTilesUnderCharacter(character, board);
-    debugShowHitBox(character);
-    debugShowRect(character);
-    debugShowReg(character);
-    debugShowGridOutline();
+    debugRenderer.showHitBox(character);
+    debugRenderer.showRect(character);
+    debugRenderer.showReg(character);
+    debugRenderer.showGridOutline();
   } else {
-    removeDebugStyles(character);
+    debugRenderer.clearAll(character);
   }
 
   if (!character.alive) {
@@ -158,53 +155,58 @@ function displayPlayerStats(player) {
   playerDamage.innerText = player.damage.toFixed(2);
 }
 
-let prevTiles = [];
-function debugHighlightTilesUnderCharacter(character, board) {
-  const coords = board.getTileCoordsFromCharacter(character);
-  const className = "highlight-player-tile";
-  prevTiles.forEach((t) => t.classList.remove(className));
-  prevTiles = [];
-  coords.forEach((c) => {
-    const visualTile = getVisualTileFromCoords(c);
-    visualTile.classList.add(className);
-    prevTiles.push(visualTile);
+export function initModal() {
+  const modal = document.querySelector("#game-modal");
+  const startButton = document.querySelector('#start-button');
+  const restartButton = document.querySelector('#restart-button');
+  const mapSelect = document.querySelector('#map-select');
+  
+  startButton.addEventListener('click', () => {
+    const selectedMap = mapSelect.value;
+    modal.close();
+    window.dispatchEvent(new CustomEvent('gameStart', { detail: selectedMap }));
+    showStatbar();
   });
-}
 
-function getVisualTileFromCoords({ row, col }) {
-  return document.querySelector(`.tile[data-row="${row}"][data-col="${col}"]`);
-}
-
-function debugShowHitBox(character) {
-  document.documentElement.style.setProperty("--hitboxH", character.hitbox.h);
-  document.documentElement.style.setProperty("--hitboxW", character.hitbox.w);
-  document.documentElement.style.setProperty("--hitboxX", character.hitbox.x);
-  document.documentElement.style.setProperty("--hitboxY", character.hitbox.y);
-  character.element.classList.add("show-hitbox");
-}
-
-function debugShowReg(character) {
-  document.documentElement.style.setProperty("--regY", character.regY);
-  document.documentElement.style.setProperty("--regX", character.regX);
-  character.element.classList.add("show-reg");
-}
-
-function debugShowRect(character) {
-  character.element.classList.add("show-rect");
-}
-
-function debugShowGridOutline() {
-  document
-    .querySelectorAll(".tile")
-    .forEach((t) => t.classList.add("show-grid-outline"));
-}
-
-function removeDebugStyles(character) {
-  character.element.classList.remove("show-hitbox");
-  character.element.classList.remove("show-reg");
-  character.element.classList.remove("show-rect");
-  document.querySelectorAll(".tile").forEach((t) => {
-    t.classList.remove("show-grid-outline");
-    t.classList.remove("highlight-player-tile");
+  restartButton.addEventListener('click', () => {
+    const selectedMap = mapSelect.value;
+    modal.close();
+    window.dispatchEvent(new CustomEvent('gameRestart', { detail: selectedMap }));
+    showStatbar();
   });
+
+  showStartModal();
+}
+
+export function showStartModal() {
+  const modal = document.querySelector("#game-modal");
+  hideStatbar();
+  updateModal('Welcome!', 'Please select the map you would like to play', true);
+  modal.classList.remove('game-over');
+  document.querySelector('#game-modal').showModal();
+}
+
+export function showGameOverModal() {
+  const modal = document.querySelector("#game-modal");
+  hideStatbar();
+  updateModal('Game Over!', 'Would you like to try again?', false);
+  modal.classList.add('game-over');
+  document.querySelector('#game-modal').showModal();
+}
+
+function updateModal(header, text, isStart) {
+  document.querySelector('#modal-header').textContent = header;
+  document.querySelector('#modal-text').textContent = text;
+  document.querySelector('#start-button').style.display = isStart ? 'block' : 'none';
+  document.querySelector('#restart-button').style.display = isStart ? 'none' : 'block';
+}
+
+function hideStatbar() {
+  const statbar = document.querySelector('#statbar');
+  statbar.classList.add('hidden');
+}
+
+function showStatbar() {
+  const statbar = document.querySelector('#statbar');
+  statbar.classList.remove('hidden');
 }

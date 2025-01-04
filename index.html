@@ -5,19 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>yeet</title>
     <link rel="stylesheet" href="./styles/index.css" />
+    <script src="./src/controller.js" type="module" defer></script>
   </head>
   <body>
     <div id="root"></div>
-    <div>
+
+    <section id="statbar">
       <button id="debug-button">
         debug mode: <span id="debug-status"></span>
       </button>
-      <button id="restart-button">restart</button>
+      
       <span id="player-stats">
         | Health: <span id="player-health"></span> | Damage:
         <span id="player-damage"></span> |
       </span>
-    </div>
-    <script src="./src/controller.js" type="module"></script>
+    </section>
+
+    <dialog id="game-modal" class="modal">
+      <div class="modal-backdrop">
+        <div class="modal-content">
+          <h1 id="modal-header">Welcome!</h1> <!-- The content is subject to change depending on whether the modal is at game start or gmae over -->
+          <p id="modal-text"></p>
+          <div class="map-selector">
+              <label for="map-select">Choose a map:</label>
+              <select id="map-select">
+                <option value="map1" selected>Road</option>
+                <option value="mapArena">Arena</option>
+                <option value="mapMaze">Maze</option>
+                <option value="mapOpen">Open</option>
+                <option value="mapAsymmetric">Asymmetric</option>
+              </select>
+          </div>
+          <!-- Which button is showing is dependent on whether the modal is at game start or gmae over  -->
+          <button id="start-button">start</button>
+          <button id="restart-button">restart</button>
+        </div>
+      </div>
+    </dialog>
+
   </body>
 </html>
