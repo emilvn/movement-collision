@@ -1,72 +1,53 @@
 # Pseudocode for our A\* implementation
 
 ```
-// Returns a unique string key for grid coordinates
-function getCoordKey(coords)
-   return coords.row.toString() + coords.col.toString()
-
-// Reconstructs the path from start to goal using the cameFrom map
 function reconstructPath(cameFrom, current)
-   totalPath := [current]
-   while current exists
-       current := cameFrom[getCoordKey(current)]
-       if current exists
-           totalPath.insertAtStart(current)
-   return totalPath
+    totalPath = [current]
+    while current exists in cameFrom:
+        current = cameFrom[current]
+        totalPath.unshift(current)
+    return totalPath
 
-// Custom comparator for PriorityQueue that prioritizes lower f-scores
-function compareDistance(a, b, fScore)
-   return fScore[getCoordKey(b)] - fScore[getCoordKey(a)]
+ 
+function aStar(start, goal, board, h)
+    // Convert pixel coordinates to grid coordinates
+    startCoords = board.getCoordFromPos(start)
+    goalCoords = board.getCoordFromPos(goal)
 
-// A* pathfinding optimized for grid-based movement with terrain costs
-// Returns array of grid coordinates from start to goal, or false if no path exists
-function aStar(start, goal, board, heuristicFunction)
-   startCoords := board.getCoordFromPos(start)
-   goalCoords := board.getCoordFromPos(goal)
+    // Initialize data structures
+    gScore = new Map()  // Cost of path from start to node
+    fScore = new Map()  // Estimated total cost through node
+    cameFrom = new Map()  // Used to reconstruct the path
+    openSet = new PriorityQueue()
 
-   gScore := empty object
-   gScore[getCoordKey(startCoords)] := 0
+    // Initialize start node
+    gScore[startCoords] = 0
+    fScore[startCoords] = h(startCoords)
+    openSet.enqueue(startCoords, fScore[startCoords])
 
-   fScore := empty object
-   fScore[getCoordKey(startCoords)] := heuristicFunction(startCoords, goalCoords)
-
-   cameFrom := empty object
-
-   // Using both PriorityQueue and Set for efficient operations
-   openSetCoords := empty Set
-   openSet := new PriorityQueue(compareDistance)
-   openSet.enqueue(startCoords)
-   openSetCoords.add(startCoords)
-
-   while openSet is not empty
-       current := openSet.dequeue()
-       currentKey := getCoordKey(current)
-       currentGScore := gScore[currentKey] ?? Infinity
-
-       if current.row equals goalCoords.row AND current.col equals goalCoords.col
-           return reconstructPath(cameFrom, current)
-
-       neighbours := board.tiles.neighbours(current.row, current.col)
-
-       for each neighbour in neighbours
-           neighbourKey := getCoordKey(neighbour)
-           neighbourGScore := gScore[neighbourKey] ?? Infinity
-
-           tile := board.getTileAtCoord(neighbour)
-           if tile is null
-               continue
-
-           // Factor in terrain cost for pathfinding
-           tentativeGScore := currentGScore + tile.getPathfindingCost()
-
-           if tentativeGScore < neighbourGScore
-               cameFrom[neighbourKey] := current
-               gScore[neighbourKey] := tentativeGScore
-               fScore[neighbourKey] := tentativeGScore + heuristicFunction(neighbour, goalCoords)
-
-               if neighbour not in openSetCoords
-                   openSet.enqueue(neighbour)
-                   openSetCoords.add(neighbour)
-
-   return false
+    while openSet not empty:
+        current = openSet.dequeue()
+        
+        if current equals goalCoords:
+            return reconstructPath(cameFrom, current)
+        
+        // Check all four neighbors (N, S, E, W)
+        for each neighbour in board.getNeighbours(current):
+            tile = board.getTileAtCoord(neighbour)
+            if tile is null or otherwise illegal:
+                continue
+                
+            tentativeGScore = gScore[current] + tile.weight
+            
+            if tentativeGScore < gScore[neighbour]:
+                // This path to neighbour is better than any 		       // previous one
+                cameFrom[neighbour] = current
+                gScore[neighbour] = tentativeGScore
+                newFScore = tentativeGScore + h(neighbour)
+                fScore[neighbour] = newFScore
+                
+                if neighbour not in openSet:
+                    openSet.enqueue(neighbour, newFScore)
+    
+    return empty path // No path found
 ```
