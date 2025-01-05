@@ -67,7 +67,4 @@ export default class CollisionSystem {
     }
     return false;
   }
-
-  // TODO EMIL: implement
-  inLineOfSight(charA, charB) {}
 }
