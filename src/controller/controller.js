@@ -5,15 +5,15 @@ import {
   mapDungeon,
   mapMaze,
   mapOpen,
-} from "../configs/maps.js";
-import Board from "./model/Board.js";
-import Enemy from "./model/Enemy.js";
-import Player from "./model/Player.js";
-import GameLoop from "./core/GameLoop.js";
-import InputHandler from "./core/InputHandler.js";
-import CollisionSystem from "./core/CollisionSystem.js";
-import * as view from "./view/view.js";
-import * as debugRenderer from "./view/debugRenderer.js";
+} from "../../configs/maps.js";
+import Board from "../model/Board.js";
+import Enemy from "../model/Enemy.js";
+import Player from "../model/Player.js";
+import GameLoop from "./GameLoop.js";
+import InputHandler from "./InputHandler.js";
+import CollisionSystem from "../model/CollisionSystem.js";
+import * as view from "../view/view.js";
+import * as debugRenderer from "../view/debugRenderer.js";
 
 // debug toggle flag
 let DEBUG = false;

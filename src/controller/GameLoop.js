@@ -1,4 +1,4 @@
-import { aStar, manhattanDistance } from "./pathfinding.js";
+import { aStar, manhattanDistance } from "../model/pathfinding/pathfinding.js";
 import { highlightTiles } from "../view/debugRenderer.js";
 
 export default class GameLoop {

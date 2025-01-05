@@ -1,4 +1,4 @@
-import Board from "../model/Board.js";
+import Board from "./Board.js";
 
 export default class CollisionSystem {
   /**

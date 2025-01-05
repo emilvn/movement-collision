@@ -1,4 +1,4 @@
-import * as controller from "../controller.js";
+import * as controller from "../controller/controller.js";
 import * as debugRenderer from "./debugRenderer.js";
 
 export function init(board, characters) {
