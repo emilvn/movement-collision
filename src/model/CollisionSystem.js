@@ -1,4 +1,4 @@
-import Board from "../model/Board.js";
+import Board from "./Board.js";
 
 export default class CollisionSystem {
   /**
@@ -67,7 +67,4 @@ export default class CollisionSystem {
     }
     return false;
   }
-
-  // TODO EMIL: implement
-  inLineOfSight(charA, charB) {}
 }

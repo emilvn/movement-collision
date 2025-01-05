@@ -2,17 +2,18 @@ import {
   map1,
   mapArena,
   mapAsymmetric,
+  mapDungeon,
   mapMaze,
   mapOpen,
-} from "../configs/maps.js";
-import Board from "./model/Board.js";
-import Enemy from "./model/Enemy.js";
-import Player from "./model/Player.js";
-import GameLoop from "./core/GameLoop.js";
-import InputHandler from "./core/InputHandler.js";
-import CollisionSystem from "./core/CollisionSystem.js";
-import * as view from "./view/view.js";
-import * as debugRenderer from "./view/debugRenderer.js";
+} from "../../configs/maps.js";
+import Board from "../model/Board.js";
+import Enemy from "../model/Enemy.js";
+import Player from "../model/Player.js";
+import GameLoop from "./GameLoop.js";
+import InputHandler from "./InputHandler.js";
+import CollisionSystem from "../model/CollisionSystem.js";
+import * as view from "../view/view.js";
+import * as debugRenderer from "../view/debugRenderer.js";
 
 // debug toggle flag
 let DEBUG = false;
@@ -26,13 +27,13 @@ let gameLoop;
 
 let player, enemies;
 
-window.addEventListener('gameStart', (e) => start(e.detail));
-window.addEventListener('gameRestart', (e) => reset(e.detail));
+window.addEventListener("gameStart", (e) => start(e.detail));
+window.addEventListener("gameRestart", (e) => reset(e.detail));
 window.addEventListener("load", init);
 
 function init() {
   console.log("Game initialized");
-  
+
   view.initModal();
 }
 
@@ -57,7 +58,7 @@ function start(selectedMap) {
 }
 
 function handleMapSelect(mapName) {
-  const maps = { map1, mapArena, mapMaze, mapOpen, mapAsymmetric };
+  const maps = { map1, mapArena, mapMaze, mapOpen, mapAsymmetric, mapDungeon };
   board.loadMap(maps[mapName]);
 }
 

@@ -1,4 +1,4 @@
-import CollisionSystem from "../core/CollisionSystem.js";
+import CollisionSystem from "./CollisionSystem.js";
 import Character from "./Character.js";
 
 export default class Enemy extends Character {
